@@ -67,7 +67,7 @@ pip install -r requirements.txt
 
 5. Запустите сервер:
 ```
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
 Для отключения сервера используйте команду:
 ```
@@ -79,3 +79,9 @@ Ctrl + C
 7. Перейдите по адресу http://127.0.0.1:8000/docs для доступа к Swagger UI
 
 8. Перейдите по адресу http://127.0.0.1:8000/redoc для доступа к Redoc
+
+#
+### Запуск тестов:
+```
+pytest
+```
