@@ -27,4 +27,4 @@ jobs:
 
       - name: Lint application
         run: |
-          flake8 . --max-line-length=120 --exclude=migrations, .\.venv
+          flake8 . --max-line-length=120 --exclude=migrations
