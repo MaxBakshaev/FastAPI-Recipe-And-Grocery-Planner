@@ -28,7 +28,7 @@ jobs:
         run: |
           flake8 . --max-line-length=120 --exclude=migrations
 
-    tests:
+  tests:
     runs-on: ubuntu-latest
 
     steps:
