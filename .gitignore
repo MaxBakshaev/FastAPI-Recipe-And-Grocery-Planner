@@ -1,0 +1,14 @@
+.idea
+idea
+.git
+#db.sqlite3
+venv
+.venv
+.env.dev
+.env
+__pycache__/
+*/__pycache__/
+*.py[cod]
+.pyc
+*.pyc
+.vscode/*
