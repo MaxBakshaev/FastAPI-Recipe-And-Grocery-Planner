@@ -1,7 +1,7 @@
 from unittest.mock import patch
 from fastapi.testclient import TestClient
-from app import main
-from app.main import application
+
+from app.main import application, run
 from app.core.config import settings
 
 
@@ -34,7 +34,7 @@ def test_run_with_default_args2(mock_uvicorn_run):
     Проверяет, что сервер запускается с параметрами,
     совпадающими с настройками из конфига settings
     """
-    main.run()
+    run()
     args, kwargs = mock_uvicorn_run.call_args
     assert args[0] == "main:application"
     assert kwargs["host"] == settings.run.host
