@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings
 class RunConfig(BaseModel):
     """Параметры для запуска приложения"""
 
-    host: str = "0.0.0.0"
+    host: str = "127.0.0.1"
     port: int = 8000
 
 
