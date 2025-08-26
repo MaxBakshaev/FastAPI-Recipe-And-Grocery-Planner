@@ -67,7 +67,7 @@ pip install -r requirements.txt
 
 5. Запустите сервер:
 ```
-python app/main.py
+python main.py
 ```
 Для отключения сервера используйте команду:
 ```
