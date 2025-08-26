@@ -1,14 +1,32 @@
-from fastapi import FastAPI
-from app.api import router as api_router
+import sys
+import os
+
+sys.path.append(os.path.dirname(__file__))
 
 
-app = FastAPI()
-app.include_router(
+from fastapi import FastAPI  # noqa: E402
+
+from api import router as api_router  # noqa: E402
+from core.config import settings  # noqa: E402
+
+import uvicorn  # noqa: E402
+
+
+application = FastAPI()
+application.include_router(
     api_router,
-    prefix="/api",
+    prefix=settings.api.prefix,
 )
 
 
-# if __name__ == "__main__":
-#     # uvicorn.run("main:app", reload=True)
-#     uvicorn.run(app)
+def run():
+    uvicorn.run(
+        "main:application",
+        host=settings.run.host,
+        port=settings.run.port,
+        reload=True,
+    )
+
+
+if __name__ == "__main__":
+    run()

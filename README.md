@@ -67,7 +67,7 @@ pip install -r requirements.txt
 
 5. Запустите сервер:
 ```
-uvicorn app.main:app --reload
+python app/main.py
 ```
 Для отключения сервера используйте команду:
 ```
