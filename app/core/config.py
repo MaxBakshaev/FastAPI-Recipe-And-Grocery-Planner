@@ -25,7 +25,10 @@ class DatabaseConfig(BaseModel):
 class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
-    db: DatabaseConfig
+    db: DatabaseConfig = DatabaseConfig(
+        url="postgresql+asyncpg://user:password@localhost:5432/dbname"
+    )
 
 
 settings = Settings()
+print(settings.db)
