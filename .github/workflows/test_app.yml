@@ -47,4 +47,4 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest app
+          PYTHONPATH=app pytest app
