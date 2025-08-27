@@ -29,7 +29,7 @@ def test_default_prefix_available():
 
 
 @patch("uvicorn.run")
-def test_run_with_default_args2(mock_uvicorn_run):
+def test_run_with_default_args(mock_uvicorn_run):
     """
     Проверяет, что сервер запускается с параметрами,
     совпадающими с настройками из конфига settings
