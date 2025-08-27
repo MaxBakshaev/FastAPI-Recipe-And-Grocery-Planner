@@ -2,7 +2,7 @@ from unittest.mock import patch
 from fastapi.testclient import TestClient
 
 from main import application, run
-from app.core import settings
+from core import settings
 
 
 client = TestClient(application)
