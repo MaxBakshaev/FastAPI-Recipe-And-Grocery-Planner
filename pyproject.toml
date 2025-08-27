@@ -19,7 +19,8 @@ dependencies = [
     "asyncpg (>=0.30.0,<0.31.0)",
     "pytest-asyncio (>=1.1.0,<2.0.0)",
     "alembic (>=1.16.4,<2.0.0)",
-    "python-dotenv (>=1.1.1,<2.0.0)"
+    "python-dotenv (>=1.1.1,<2.0.0)",
+    "orjson (>=3.11.3,<4.0.0)"
 ]
 
 
