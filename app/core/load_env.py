@@ -6,6 +6,7 @@ def load_env_file():
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
     possible_paths = [
+        os.path.join(current_dir, "..", "..", ".env"),
         os.path.join(current_dir, "..", ".env"),
     ]
 
