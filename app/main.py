@@ -1,12 +1,12 @@
 from contextlib import asynccontextmanager
 
+import uvicorn
 from fastapi import FastAPI
 
-import uvicorn
+from core.config import settings
 
 from api import router as api_router
 from core.models import db_helper
-from core import settings
 
 
 @asynccontextmanager
@@ -24,7 +24,6 @@ application = FastAPI(
 )
 application.include_router(
     api_router,
-    prefix=settings.api.prefix,
 )
 
 
