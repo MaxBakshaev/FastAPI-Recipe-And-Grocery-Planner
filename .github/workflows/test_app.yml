@@ -31,6 +31,10 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
+    env:
+      APP_CONFIG__DB__URL: ${{ secrets.APP_CONFIG__DB__URL }}
+      APP_CONFIG__DB__ECHO: ${{ secrets.APP_CONFIG__DB__ECHO }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
