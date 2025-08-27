@@ -26,10 +26,14 @@ jobs:
 
       - name: Lint application
         run: |
-          flake8 . --max-line-length=120 --exclude=migrations
+          flake8 app --max-line-length=120 --exclude=migrations
 
   tests:
     runs-on: ubuntu-latest
+
+    env:
+      APP_CONFIG__DB__URL: ${{ secrets.APP_CONFIG__DB__URL }}
+      APP_CONFIG__DB__ECHO: ${{ secrets.APP_CONFIG__DB__ECHO }}
 
     steps:
       - name: Checkout code
@@ -47,4 +51,4 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest
+          pytest app
