@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class User(Base, IdIntPkMixin, SQLAlchemyBaseUserTable[int]):
-    """Пользователь с id"""
+    """Пользователь с id, почтой, хеш-паролем"""
 
     @classmethod
     def get_db(cls, session: "AsyncSession"):
