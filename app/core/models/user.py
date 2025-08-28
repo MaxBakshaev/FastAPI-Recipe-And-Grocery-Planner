@@ -1,13 +1,21 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from typing import TYPE_CHECKING
+
+from fastapi_users_db_sqlalchemy import (
+    SQLAlchemyBaseUserTable,
+    SQLAlchemyUserDatabase,
+)
 
 from .mixins.id_int_pk import IdIntPkMixin
 
 from . import Base
 
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
 
-class User(IdIntPkMixin, Base):
+
+class User(Base, IdIntPkMixin, SQLAlchemyBaseUserTable[int]):
     """Пользователь с id"""
 
-    username: Mapped[str] = mapped_column(unique=True)
-    email: Mapped[str] = mapped_column(unique=True)
-    hashed_password: Mapped[str]
+    @classmethod
+    def get_db(cls, session: "AsyncSession"):
+        return SQLAlchemyUserDatabase(session, cls)
