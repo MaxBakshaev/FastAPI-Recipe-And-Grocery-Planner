@@ -1,13 +1,12 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from fastapi_users_db_sqlalchemy import (
+    SQLAlchemyBaseUserTable,
+)
 
 from .mixins.id_int_pk import IdIntPkMixin
 
 from . import Base
 
 
-class User(IdIntPkMixin, Base):
+class User(Base, IdIntPkMixin, SQLAlchemyBaseUserTable[int]):
     """Пользователь с id"""
-
-    username: Mapped[str] = mapped_column(unique=True)
-    email: Mapped[str] = mapped_column(unique=True)
-    hashed_password: Mapped[str]
+    pass
