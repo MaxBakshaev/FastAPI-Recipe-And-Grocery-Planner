@@ -1,14 +1,13 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 
 class UserBase(BaseModel):
     username: str
-    foo: int
-    bar: int
+    email: EmailStr
 
 
 class UserCreate(UserBase):
-    pass
+    password: str
 
 
 class UserRead(UserBase):
