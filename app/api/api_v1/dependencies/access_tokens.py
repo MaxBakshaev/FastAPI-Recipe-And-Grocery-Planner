@@ -14,4 +14,5 @@ async def get_access_tokens_db(
         Depends(db_helper.session_getter),
     ],
 ):
+    """https://fastapi-users.github.io/fastapi-users/latest/configuration/authentication/strategies/database/"""
     yield AccessToken.get_db(session=session)

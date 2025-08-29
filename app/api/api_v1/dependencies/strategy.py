@@ -17,6 +17,7 @@ def get_database_strategy(
         Depends(get_access_tokens_db),
     ],
 ) -> DatabaseStrategy:
+    """https://fastapi-users.github.io/fastapi-users/latest/configuration/authentication/strategies/database/"""
     return DatabaseStrategy(
         database=access_tokens_db,
         lifetime_seconds=settings.access_token.lifetime_seconds,
