@@ -2,6 +2,7 @@
 https://fastapi-users.github.io/fastapi-users/latest/configuration/routers/auth/
 https://fastapi-users.github.io/fastapi-users/latest/configuration/routers/register/
 https://fastapi-users.github.io/fastapi-users/latest/configuration/routers/verify/
+https://fastapi-users.github.io/fastapi-users/latest/configuration/routers/reset/
 """
 
 from fastapi import APIRouter
@@ -37,4 +38,10 @@ router.include_router(
 # /verify
 router.include_router(
     router=fastapi_users.get_verify_router(UserRead),
+)
+
+# /forgot-password
+# /reset-password
+router.include_router(
+    router=fastapi_users.get_reset_password_router(),
 )
