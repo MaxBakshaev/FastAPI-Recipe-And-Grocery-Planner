@@ -25,3 +25,10 @@ async def create_user(
     await session.commit()
     # await session.refresh(user)
     return user
+
+
+async def get_user_info(
+    session: AsyncSession,
+    user_id: int,
+) -> User | None:
+    return await session.get(User, user_id)
