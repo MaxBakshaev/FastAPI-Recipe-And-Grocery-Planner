@@ -7,6 +7,7 @@ from fastapi.responses import ORJSONResponse
 from core.config import settings
 
 from api import router as api_router
+from views import router as views_router
 from core.models import db_helper
 
 
@@ -24,9 +25,8 @@ application = FastAPI(
     default_response_class=ORJSONResponse,
     lifespan=lifespan,
 )
-application.include_router(
-    api_router,
-)
+application.include_router(api_router)
+application.include_router(views_router)
 
 
 def run():
