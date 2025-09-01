@@ -15,6 +15,9 @@ def index_page(
     return templates.TemplateResponse(
         request=request,
         name="index.html",
+        context={
+            "title": "Главная",
+        },
     )
 
 
