@@ -1,11 +1,4 @@
-from typing import Annotated
-
-from fastapi import APIRouter, Depends, Request
-
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from core.models import db_helper
-from crud.users import get_user_info
+from fastapi import APIRouter, Request
 from utils.templates import templates
 
 router = APIRouter(
