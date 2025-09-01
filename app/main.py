@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
@@ -27,6 +28,8 @@ application = FastAPI(
 )
 application.include_router(api_router)
 application.include_router(views_router)
+
+application.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 
 def run():
