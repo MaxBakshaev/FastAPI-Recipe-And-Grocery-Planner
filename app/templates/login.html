@@ -13,7 +13,12 @@
       <div class="form-group">
         <input type="password" name="password" class="form-control" placeholder="Пароль" required />
       </div>
-
+      {% if success %}
+        <p class="text-center" 
+          style="color: green; margin-bottom: 20px;">
+          {{ success }}
+        </p>
+      {% endif %}
       {% if error %}
       <p class="text-center" 
       style="color: red; margin-bottom: 20px;"

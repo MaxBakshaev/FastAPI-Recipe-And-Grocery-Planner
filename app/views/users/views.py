@@ -1,11 +1,14 @@
+from pydantic import ValidationError
+
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import RedirectResponse
 from fastapi_users.exceptions import UserAlreadyExists
-from api.api_v1.fastapi_users import current_active_user_cookie
 
+from api.api_v1.fastapi_users import current_active_user_cookie
 from api.dependencies.authentication.user_manager import get_user_manager
 from api.dependencies.authentication import authentication_backend_cookie
 from api.dependencies.authentication.access_tokens import get_access_tokens_db
+from core.models.user import User
 from crud.users import authenticate_user
 from core.authentication.user_manager import UserManager
 from core.schemas.user import UserCreate
@@ -65,15 +68,28 @@ async def register_user(
                 "error": "Ошибка регистрации",
             },
         )
+    except ValidationError:
+        return templates.TemplateResponse(
+            "register.html",
+            {
+                "request": request,
+                "error": "Ошибка валидации",
+            },
+        )
 
 
 @router.get("/login", name="login")
 async def login_get(request: Request, success: str = None):
+
+    message = None
+    if success == "1":
+        message = "Регистрация прошла успешно. Войдите в аккаунт."
+
     return templates.TemplateResponse(
         "login.html",
         {
             "request": request,
-            "success": success,
+            "success": message,
             "title": "Войти",
         },
     )
@@ -98,7 +114,9 @@ async def login(
             },
         )
 
-    strategy = authentication_backend_cookie.get_strategy(access_tokens_db=access_tokens_db)
+    strategy = authentication_backend_cookie.get_strategy(
+        access_tokens_db=access_tokens_db
+    )
     token = await strategy.write_token(user)
 
     response = RedirectResponse(url="/user/profile", status_code=HTTP_302_FOUND)
@@ -124,3 +142,21 @@ async def profile_page(
             "title": "Профиль",
         },
     )
+
+
+@router.get("/logout", name="logout")
+async def logout(
+    request: Request,
+    user: User = Depends(current_active_user_cookie),
+    access_tokens_db=Depends(get_access_tokens_db),
+):
+    strategy = authentication_backend_cookie.get_strategy(
+        access_tokens_db=access_tokens_db
+    )
+    token = request.cookies.get("access_token")
+
+    response = await authentication_backend_cookie.logout(strategy, user, token)
+    response = RedirectResponse(url="/", status_code=302)
+    response.delete_cookie("access_token")
+
+    return response
