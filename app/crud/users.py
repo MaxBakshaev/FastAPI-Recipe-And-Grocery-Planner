@@ -1,10 +1,12 @@
 from typing import Sequence
 
+from fastapi_users.exceptions import InvalidPasswordException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.authentication.user_manager import UserManager
 from core.schemas.user import UserCreate
-from core.models import User
+from core.models import User, Profile
 
 
 async def get_all_users(
@@ -32,3 +34,35 @@ async def get_user_info(
     user_id: int,
 ) -> User | None:
     return await session.get(User, user_id)
+
+
+async def authenticate_user(
+    email: str,
+    password: str,
+    user_manager: UserManager,
+):
+    user = await user_manager.get_by_email(email)
+    if not user:
+        return None
+    try:
+        await user_manager.validate_password(password, user)
+    except InvalidPasswordException:
+        return None
+    return user
+
+
+async def create_user_profile(
+    session: AsyncSession,
+    user_id: int,
+    first_name: str | None = None,
+    last_name: str | None = None,
+) -> Profile:
+    """Создать профиль пользователя"""
+    profile = Profile(
+        user_id=user_id,
+        first_name=first_name,
+        last_name=last_name,
+    )
+    session.add(profile)
+    await session.commit()
+    return profile

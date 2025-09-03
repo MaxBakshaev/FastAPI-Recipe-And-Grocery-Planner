@@ -9,8 +9,8 @@ from fastapi import APIRouter
 
 from core.schemas.user import UserCreate, UserRead
 
-from .fastapi_users import fastapi_users
-from api.dependencies.authentication import authentication_backend
+from .fastapi_users import fastapi_users_bearer
+from api.dependencies.authentication import authentication_backend_bearer
 from core.config import settings
 
 router = APIRouter(
@@ -21,15 +21,15 @@ router = APIRouter(
 # /login
 # /logout
 router.include_router(
-    router=fastapi_users.get_auth_router(
-        authentication_backend,
+    router=fastapi_users_bearer.get_auth_router(
+        authentication_backend_bearer,
         # requires_verification=True,
     ),
 )
 
 # /register
 router.include_router(
-    fastapi_users.get_register_router(
+    fastapi_users_bearer.get_register_router(
         UserRead,
         UserCreate,
     ),
@@ -38,11 +38,11 @@ router.include_router(
 # /request-verify-token
 # /verify
 router.include_router(
-    router=fastapi_users.get_verify_router(UserRead),
+    router=fastapi_users_bearer.get_verify_router(UserRead),
 )
 
 # /forgot-password
 # /reset-password
 router.include_router(
-    router=fastapi_users.get_reset_password_router(),
+    router=fastapi_users_bearer.get_reset_password_router(),
 )
