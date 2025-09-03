@@ -33,32 +33,32 @@
 										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link active">Главная</a></li>
 										<li class="tm-nav-li"><a href="" class="tm-nav-link">Рецепты</a></li>
 										<li class="tm-nav-li"><a href="{{ url_for('profile') }}" class="tm-nav-link">Профиль</a></li>
-										<li class="tm-nav-li"><a href="" class="tm-nav-link">Выйти</a></li>
+										<li class="tm-nav-li"><a href="{{ url_for('logout') }}" class="tm-nav-link">Выйти</a></li>
 									{% elif title == "Профиль" %}
 										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link">Главная</a></li>
 										<li class="tm-nav-li"><a href="" class="tm-nav-link">Рецепты</a></li>
 										<li class="tm-nav-li"><a href="{{ url_for('profile') }}" class="tm-nav-link active">Профиль</a></li>
-										<li class="tm-nav-li"><a href="" class="tm-nav-link">Выйти</a></li>
+										<li class="tm-nav-li"><a href="{{ url_for('logout') }}" class="tm-nav-link">Выйти</a></li>
 									{% else %}
 										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link">Главная</a></li>
 										<li class="tm-nav-li"><a href="" class="tm-nav-link">Рецепты</a></li>
 										<li class="tm-nav-li"><a href="{{ url_for('profile') }}" class="tm-nav-link">Профиль</a></li>
-										<li class="tm-nav-li"><a href="" class="tm-nav-link">Выйти</a></li>
+										<li class="tm-nav-li"><a href="{{ url_for('logout') }}" class="tm-nav-link">Выйти</a></li>
 									{% endif %}
 								{% else %}
 									{% if title == "Главная" %}
 										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link active">Главная</a></li>
-										<li class="tm-nav-li"><a href="about.html" class="tm-nav-link">Рецепты</a></li>
+										<li class="tm-nav-li"><a href="" class="tm-nav-link">Рецепты</a></li>
 										<li class="tm-nav-li"><a href="{{ url_for('login') }}" class="tm-nav-link">Войти</a></li>
 										<li class="tm-nav-li"><a href="{{ url_for('register') }}" class="tm-nav-link">Регистрация</a></li>
 									{% elif title == "Войти" %}
 										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link">Главная</a></li>
-										<li class="tm-nav-li"><a href="about.html" class="tm-nav-link">Рецепты</a></li>
+										<li class="tm-nav-li"><a href="" class="tm-nav-link">Рецепты</a></li>
 										<li class="tm-nav-li"><a href="{{ url_for('login') }}" class="tm-nav-link active">Войти</a></li>
 										<li class="tm-nav-li"><a href="{{ url_for('register') }}" class="tm-nav-link">Регистрация</a></li>
 									{% elif title == "Регистрация" %}
 										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link">Главная</a></li>
-										<li class="tm-nav-li"><a href="about.html" class="tm-nav-link">Рецепты</a></li>
+										<li class="tm-nav-li"><a href="" class="tm-nav-link">Рецепты</a></li>
 										<li class="tm-nav-li"><a href="{{ url_for('login') }}" class="tm-nav-link">Войти</a></li>
 										<li class="tm-nav-li"><a href="{{ url_for('register') }}" class="tm-nav-link active">Регистрация</a></li>
 									{% else %}
