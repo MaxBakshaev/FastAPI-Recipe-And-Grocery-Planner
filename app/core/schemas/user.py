@@ -10,7 +10,7 @@ class UserRead(schemas.BaseUser[UserIdType]):
 
 
 class UserCreate(schemas.BaseUserCreate):
-    pass
+    username: str
 
 
 class UserUpdate(schemas.BaseUserUpdate):
