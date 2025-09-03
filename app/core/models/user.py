@@ -20,7 +20,7 @@ class User(Base, IdIntPkMixin, SQLAlchemyBaseUserTable[UserIdType]):
 
     username: Mapped[str] = mapped_column(String(32), unique=True)
     profile: Mapped["Profile"] = relationship("Profile", back_populates="user")
-    
+
     @classmethod
     def get_db(cls, session: "AsyncSession"):
         return SQLAlchemyUserDatabase(session, cls)
