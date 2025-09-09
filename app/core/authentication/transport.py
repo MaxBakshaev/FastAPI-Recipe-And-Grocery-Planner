@@ -7,7 +7,7 @@ from core.config import settings
 cookie_transport = CookieTransport(
     cookie_name="access_token",
     cookie_max_age=3600,
-    cookie_secure=True,
+    cookie_secure=False,
 )
 
 
