@@ -26,7 +26,7 @@ jobs:
 
       - name: Lint application
         run: |
-          flake8 app --max-line-length=120 --exclude=alembic
+          poetry run flake8 app --max-line-length=120 --exclude=alembic
 
   tests:
     runs-on: ubuntu-latest
