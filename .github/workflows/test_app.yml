@@ -27,51 +27,60 @@ jobs:
       - name: Lint application
         run: |
           flake8 app --max-line-length=120 --exclude=alembic
+
   postgres:
-    image: postgres:14
-    env:
-      POSTGRES_USER: test_user
-      POSTGRES_PASSWORD: test_password
-      POSTGRES_DB: test_db
-    ports:
-      - 5432:5432
-    options: >-
-      --health-cmd pg_isready
-      --health-interval 10s
-      --health-timeout 5s
-      --health-retries 5
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U test_user"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
   tests:
     runs-on: ubuntu-latest
-
-    env:
-      APP_CONFIG__DB__URL: postgresql+asyncpg://test_user:test_password@localhost:5432/test_db
-      APP_CONFIG__DB__ECHO: false
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U test_user"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12.10'
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Install dependencies
+      - name: Build services
+        run: docker-compose build
+
+      - name: Wait for PostgreSQL to be ready
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-    
-      - name: Wait for DB
-        run: |
-          echo "Waiting for PostgreSQL to be ready..."
-          sleep 5
+          until docker-compose exec -T postgres pg_isready -U test_user; do
+            echo "Waiting for Postgres..."
+            sleep 2
+          done
 
       - name: Run migrations
-        working-directory: ./app
-        run: |
-          alembic upgrade head
+        run: docker-compose run --rm alembic alembic -c app/alembic.ini upgrade head
 
       - name: Run tests
-        run: |
-          pytest app --disable-warnings -v
+        run: docker-compose run --rm alembic pytest app --disable-warnings -v
