@@ -34,6 +34,7 @@ jobs:
       postgres:
         image: postgres:14
         env:
+          APP_CONFIG__DB__URL: postgresql+asyncpg://test_user:test_password@postgres:5432/test_db
           POSTGRES_USER: test_user
           POSTGRES_PASSWORD: test_password
           POSTGRES_DB: test_db
