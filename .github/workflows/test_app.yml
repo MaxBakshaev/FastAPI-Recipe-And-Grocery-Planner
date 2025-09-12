@@ -34,12 +34,9 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          APP_CONFIG__DB__URL: postgresql+asyncpg://test_user:test_password@postgres:5432/test_db
           POSTGRES_USER: test_user
           POSTGRES_PASSWORD: test_password
           POSTGRES_DB: test_db
-        ports:
-          - 15432:5432
         options: >-
           --health-cmd="pg_isready -U test_user"
           --health-interval=10s
@@ -55,8 +52,6 @@ jobs:
           POSTGRES_USER: test_user
           POSTGRES_PASSWORD: test_password
           POSTGRES_DB: test_db
-        ports:
-          - 15432:5432
         options: >-
           --health-cmd="pg_isready -U test_user"
           --health-interval=10s
