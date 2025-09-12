@@ -28,35 +28,8 @@ jobs:
         run: |
           flake8 app --max-line-length=120 --exclude=alembic
 
-  # postgres:
-  #   runs-on: ubuntu-latest
-  #   services:
-  #     postgres:
-  #       image: postgres:14
-  #       env:
-  #         POSTGRES_USER: test_user
-  #         POSTGRES_PASSWORD: test_password
-  #         POSTGRES_DB: test_db
-  #       options: >-
-  #         --health-cmd="pg_isready -U test_user"
-  #         --health-interval=10s
-  #         --health-timeout=5s
-  #         --health-retries=5
-
   tests:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:14
-        env:
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-          POSTGRES_DB: test_db
-        options: >-
-          --health-cmd="pg_isready -U test_user"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
 
     steps:
       - name: Checkout code
@@ -81,7 +54,7 @@ jobs:
           done
 
       - name: Run migrations
-        run: | 
+        run: |
           docker-compose run --rm alembic alembic -c app/alembic.ini upgrade head
 
       - name: Run tests
