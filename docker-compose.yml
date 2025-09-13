@@ -33,7 +33,7 @@ services:
     volumes:
       - .:/app
     entrypoint: ["./wait-for-it.sh", "postgres:5432", "--"]
-    command: ["alembic", "-c", "app/alembic.ini", "upgrade", "head"]
+    command: ["sh", "-c", "cd app && alembic -c alembic.ini upgrade head"]
     environment:
       - APP_CONFIG__DB__URL=postgresql+asyncpg://test_user:test_password@postgres:5432/test_db
       - PYTHONPATH=/app/app
