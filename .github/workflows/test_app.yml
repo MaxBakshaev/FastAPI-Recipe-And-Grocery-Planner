@@ -53,9 +53,10 @@ jobs:
           docker-compose build
         continue-on-error: true
 
-      - name: List files in the root directory of the repo
+      - name: Check file permissions and content before starting containers
         run: |
-          ls -l
+          ls -l /app/wait-for-it.sh
+          cat /app/wait-for-it.sh
 
       - name: Start containers
         run: |
