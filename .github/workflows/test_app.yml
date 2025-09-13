@@ -53,6 +53,9 @@ jobs:
           docker-compose build
         continue-on-error: true
 
+      - name: List all containers and their statuses
+        run: docker-compose ps
+
       - name: List files inside app container
         run: |
           docker-compose exec app ls -l /app
