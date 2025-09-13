@@ -53,9 +53,9 @@ jobs:
           docker-compose build
         continue-on-error: true
 
-      - name: Check if wait-for-it.sh is executable
+      - name: List files in the root directory of the repo
         run: |
-          ls -l /app/wait-for-it.sh
+          ls -l
 
       - name: Start containers
         run: |
