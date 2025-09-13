@@ -28,7 +28,7 @@ jobs:
         run: |
           flake8 app --max-line-length=120 --exclude=alembic
 
-  tests:
+    test:
     runs-on: ubuntu-latest
 
     steps:
@@ -38,7 +38,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Install Docker Compose
+      - name: Set up Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
@@ -49,23 +49,23 @@ jobs:
           docker-compose --version
 
       - name: Build services
-        run: | 
+        run: |
           docker-compose build
         continue-on-error: true
 
+      - name: Check if containers started successfully
+        run: |
+          docker-compose ps  # Выводим список запущенных контейнеров
+
       - name: Start containers
-        run: | 
+        run: |
           docker-compose up -d
         continue-on-error: true
-      
-      - name: Check running containers
-        run: | 
-          docker ps
 
       - name: Wait for PostgreSQL to be ready
         run: |
           until docker-compose exec -T postgres pg_isready -U test_user; do
-            echo "Waiting for Postgres..."
+            echo "Waiting for PostgreSQL to be ready..."
             sleep 2
           done
 
@@ -78,8 +78,4 @@ jobs:
           docker-compose run --rm alembic pytest app --disable-warnings -v
 
       - name: Shut down Docker Compose
-        run: |
-          docker-compose down -v
-        
-volumes:
-  pgdata:
+        run: docker-compose down -v
