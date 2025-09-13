@@ -12,26 +12,30 @@ services:
       - "15432:5432"
 
   app:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     depends_on:
       - postgres
     ports:
       - "8000:8000"
     working_dir: /app
     volumes:
-      - ./app:/app/app
+      - ../app:/app/app
     environment:
       - APP_CONFIG__DB__URL=postgresql+asyncpg://test_user:test_password@postgres:5432/test_db
       - PYTHONPATH=/app/app
     command: ["./wait-for-it.sh", "postgres:5432", "--", "uvicorn", "app.main:application", "--host", "0.0.0.0", "--port", "8000"]
 
   alembic:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     depends_on:
       - postgres
     working_dir: /app
     volumes:
-      - ./app:/app/app
+      - ../app:/app/app
     entrypoint: ["./wait-for-it.sh", "postgres:5432", "--"]
     command: ["sh", "-c", "cd app && alembic -c alembic.ini upgrade head"]
     environment:
@@ -41,13 +45,7 @@ services:
 volumes:
   pgdata:
 
-
-# docker compose build app
-# docker compose up -d
-
-# docker compose down -v
 # docker compose up --build -d
-# docker compose logs app
-# docker compose run --entrypoint /bin/sh alembic
-# docker exec -it fastapi-recipe-and-grocery-planner-postgres-1 psql -U test_user -d test_db
-# docker-compose run --rm alembic pytest app --disable-warnings -v
+# docker compose down -v
+# docker-compose -f docker/docker-compose.yml up --build -d
+# docker-compose -f docker/docker-compose.yml down -v

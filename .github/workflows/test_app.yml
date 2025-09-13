@@ -28,8 +28,12 @@ jobs:
         run: |
           flake8 app --max-line-length=120 --exclude=alembic
 
-  test:
+  tests:
+    needs: lint
     runs-on: ubuntu-latest
+
+    env:
+      COMPOSE_FILE: docker/docker-compose.yml
 
     steps:
       - name: Checkout code
