@@ -44,8 +44,3 @@ services:
 
 volumes:
   pgdata:
-
-# docker compose up --build -d
-# docker compose down -v
-# docker-compose -f docker/docker-compose.yml up --build -d
-# docker-compose -f docker/docker-compose.yml down -v

@@ -26,14 +26,11 @@ jobs:
 
       - name: Lint application
         run: |
-          flake8 app --max-line-length=120 --exclude=alembic
+          make lint
 
   tests:
     needs: lint
     runs-on: ubuntu-latest
-
-    env:
-      COMPOSE_FILE: docker/docker-compose.yml
 
     steps:
       - name: Checkout code
@@ -45,20 +42,20 @@ jobs:
       - name: Set up Docker Compose
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker-compose
+          sudo apt-get install -y docker-compose make
 
       - name: Build services
         run: |
-          docker-compose build
+          make build
 
       - name: Start containers
         run: |
-          docker-compose up -d
+          make up
           
       - name: Wait for PostgreSQL to be ready
         run: |
           timeout 20 bash -c '
-            until docker-compose exec -T postgres pg_isready -U test_user; do
+            until make dc exec -T postgres pg_isready -U test_user; do
               echo "Waiting for PostgreSQL..."
               sleep 2
             done
@@ -66,7 +63,8 @@ jobs:
 
       - name: Run tests
         run: |
-          docker-compose run --rm alembic pytest app --disable-warnings -v
+          make tests
 
       - name: Shut down Docker Compose
-        run: docker-compose down -v
+        run: |
+          make down
