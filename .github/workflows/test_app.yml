@@ -26,29 +26,51 @@ jobs:
 
       - name: Lint application
         run: |
-          flake8 app --max-line-length=120 --exclude=alembic
+          make lint
 
   tests:
+    needs: lint
     runs-on: ubuntu-latest
-
-    env:
-      APP_CONFIG__DB__URL: ${{ secrets.APP_CONFIG__DB__URL }}
-      APP_CONFIG__DB__ECHO: ${{ secrets.APP_CONFIG__DB__ECHO }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12.10'
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Install dependencies
+      - name: Set up Docker Compose
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y docker-compose make
+
+      - name: Create app/.env and app/.env.postgres
+        run: |
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> app/.env.postgres
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> app/.env.postgres
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> app/.env.postgres
+
+          echo "APP_CONFIG__DB__URL=${{ secrets.APP_CONFIG__DB__URL }}" >> app/.env
+
+      - name: Build services
+        run: |
+          make build
+
+      - name: Start containers
+        run: |
+          make up
+          
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          POSTGRES_USER=$(grep POSTGRES_USER app/.env.postgres | cut -d '=' -f2)
+
+          timeout 20 bash -c "
+            until docker-compose -f docker/docker-compose.yml exec -T postgres pg_isready -U $POSTGRES_USER; do
+              echo 'Waiting for PostgreSQL...'
+              sleep 2
+            done
+          "
 
       - name: Run tests
         run: |
-          pytest app
+          make test
