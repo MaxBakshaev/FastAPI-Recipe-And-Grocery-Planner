@@ -23,7 +23,7 @@ services:
     environment:
       - APP_CONFIG__DB__URL=postgresql+asyncpg://test_user:test_password@postgres:5432/test_db
       - PYTHONPATH=/app/app
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "uvicorn", "app.main:application", "--host", "0.0.0.0", "--port", "8000"]
+    command: ["/app/wait-for-it.sh", "postgres:5432", "--", "uvicorn", "app.main:application", "--host", "0.0.0.0", "--port", "8000"]
 
   alembic:
     build: .
@@ -32,7 +32,7 @@ services:
     working_dir: /app
     volumes:
       - .:/app
-    entrypoint: ["./wait-for-it.sh", "postgres:5432", "--"]
+    entrypoint: ["/app/wait-for-it.sh", "postgres:5432", "--"]
     command: ["sh", "-c", "cd app && alembic -c alembic.ini upgrade head"]
     environment:
       - APP_CONFIG__DB__URL=postgresql+asyncpg://test_user:test_password@postgres:5432/test_db
