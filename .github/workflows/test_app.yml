@@ -15,6 +15,11 @@ services:
       POSTGRES_USER: test_user
       POSTGRES_PASSWORD: test_password
       POSTGRES_DB: test_db
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "test_user"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
 
 jobs:
   lint:
