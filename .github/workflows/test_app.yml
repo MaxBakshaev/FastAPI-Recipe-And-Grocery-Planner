@@ -53,12 +53,6 @@ jobs:
           docker-compose build
         continue-on-error: true
 
-      
-      - name: Проверить наличие wait-for-it.sh
-        run: |
-          ls -l /app/wait-for-it.sh
-          ls -l /wait-for-it.sh
-
       - name: List files in /app
         run: ls -l /app
 
