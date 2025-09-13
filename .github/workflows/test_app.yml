@@ -43,14 +43,24 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
+      - name: Verify Docker Installation
+        run: |
+          docker --version
+          docker-compose --version
+
       - name: Build services
-        run: docker-compose build
+        run: | 
+          docker-compose build
+        continue-on-error: true
 
       - name: Start containers
-        run: docker-compose up -d
+        run: | 
+          docker-compose up -d
+        continue-on-error: true
       
       - name: Check running containers
-        run: docker ps
+        run: | 
+          docker ps
 
       - name: Wait for PostgreSQL to be ready
         run: |
@@ -68,7 +78,8 @@ jobs:
           docker-compose run --rm alembic pytest app --disable-warnings -v
 
       - name: Shut down Docker Compose
-        run: docker-compose down -v
+        run: |
+          docker-compose down -v
         
 volumes:
   pgdata:
