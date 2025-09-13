@@ -5,6 +5,7 @@ idea
 venv
 .venv
 .env.dev
+.env.postgres
 .env
 __pycache__/
 */__pycache__/

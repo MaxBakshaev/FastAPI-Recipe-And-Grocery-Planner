@@ -6,7 +6,7 @@ build:
 up:
 	$(DC) up -d
 
-buildup:
+bup:
 	$(DC) up --build -d
 
 down:
@@ -18,7 +18,7 @@ logs:
 ps:
 	$(DC) ps
 
-tests:
+test:
 	$(DC) run --rm alembic pytest app --disable-warnings -v
 
 lint:
