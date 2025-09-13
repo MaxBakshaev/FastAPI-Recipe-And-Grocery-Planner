@@ -43,30 +43,22 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Verify Docker Installation
+      - name: Build services
         run: |
-          docker --version
-          docker-compose --version
+          docker-compose build
 
-      - name: Build and start services
+      - name: Start containers
         run: |
-          docker compose up --build -d
-        continue-on-error: true
-
-      - name: List all containers and their statuses
-        run: docker-compose ps
-
-      - name: List files inside app container
-        run: |
-          docker-compose exec app ls -l /app
-          docker-compose exec app cat /app/wait-for-it.sh
+          docker-compose up -d
           
       - name: Wait for PostgreSQL to be ready
         run: |
-          until docker-compose exec -T postgres pg_isready -U test_user; do
-            echo "Waiting for PostgreSQL to be ready..."
-            sleep 2
-          done
+          timeout 20 bash -c '
+            until docker-compose exec -T postgres pg_isready -U test_user; do
+              echo "Waiting for PostgreSQL..."
+              sleep 2
+            done
+          '
 
       - name: Run tests
         run: |
