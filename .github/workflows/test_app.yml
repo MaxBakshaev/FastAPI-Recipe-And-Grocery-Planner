@@ -53,9 +53,6 @@ jobs:
           docker-compose build
         continue-on-error: true
 
-      - name: List files in /app
-        run: ls -l /app
-
       - name: Start containers
         run: |
           docker-compose up -d
