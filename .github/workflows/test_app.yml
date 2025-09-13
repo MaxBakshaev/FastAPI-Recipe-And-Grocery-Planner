@@ -55,7 +55,7 @@ jobs:
 
       - name: Check if containers started successfully
         run: |
-          docker-compose ps  # Выводим список запущенных контейнеров
+          docker-compose ps
 
       - name: Start containers
         run: |
