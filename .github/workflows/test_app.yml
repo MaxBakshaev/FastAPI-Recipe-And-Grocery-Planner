@@ -44,11 +44,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose make
 
-      - name: Create .env.dev file
+      - name: Create .env.db and .env.app
         run: |
-          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> app/.env.dev
-          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> app/.env.dev
-          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> app/.env.dev
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> app/.env.db
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> app/.env.db
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> app/.env.db
+
+          echo "APP_CONFIG__DB__URL=${{ secrets.APP_CONFIG__DB__URL }}" >> app/.env.app
 
       - name: Build services
         run: |
