@@ -6,21 +6,6 @@ on:
   pull_request:
     branches: [ main ]
 
-services:
-  postgres:
-    image: postgres:latest
-    ports:
-      - "15432:5432"
-    env:
-      POSTGRES_USER: test_user
-      POSTGRES_PASSWORD: test_password
-      POSTGRES_DB: test_db
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "test_user"]
-      interval: 10s
-      retries: 5
-      timeout: 5s
-
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -46,6 +31,23 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:14
+        ports:
+          - "15432:5432"
+        environment:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        volumes:
+          - pgdata:/var/lib/postgresql/data
+        healthcheck:
+          test: ["CMD", "pg_isready", "-U", "test_user"]
+          interval: 10s
+          retries: 5
+          timeout: 5s
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -60,6 +62,9 @@ jobs:
 
       - name: Build services
         run: docker-compose build
+
+      - name: Start containers
+        run: docker-compose up -d
       
       - name: Check running containers
         run: docker ps
@@ -78,3 +83,9 @@ jobs:
       - name: Run tests
         run: |
           docker-compose run --rm alembic pytest app --disable-warnings -v
+
+      - name: Shut down Docker Compose
+        run: docker-compose down -v
+        
+volumes:
+  pgdata:
