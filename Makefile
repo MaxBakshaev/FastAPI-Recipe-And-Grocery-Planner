@@ -1,8 +1,5 @@
 DC = docker-compose -f docker/docker-compose.yml
 
-dc:
-	$(DC)
-
 build:
 	$(DC) build
 	
