@@ -23,3 +23,6 @@ tests:
 
 lint:
 	$ flake8 app --max-line-length=120 --exclude=alembic
+
+req:
+	$ poetry export --without-hashes -f requirements.txt -o requirements.txt

@@ -64,7 +64,3 @@ jobs:
       - name: Run tests
         run: |
           make tests
-
-      - name: Shut down Docker Compose
-        run: |
-          make down
