@@ -9,8 +9,8 @@ COPY . .
 RUN chmod 755 .
 
 COPY wait-for-it.sh /app/wait-for-it.sh
-RUN ls -l /app/app
 RUN chmod +x /app/wait-for-it.sh
+RUN ls -l /app
 
 ENV PYTHONPATH=/app
 
