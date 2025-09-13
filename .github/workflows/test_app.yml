@@ -73,10 +73,6 @@ jobs:
             sleep 2
           done
 
-      - name: Run migrations
-        run: |
-          docker-compose run --rm alembic alembic -c app/alembic.ini upgrade head
-
       - name: Run tests
         run: |
           docker-compose run --rm alembic pytest app --disable-warnings -v
