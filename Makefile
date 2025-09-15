@@ -1,4 +1,3 @@
-.PHONY: push
 .SILENT:
 
 # Переменная с вызовом docker-compose
@@ -78,3 +77,11 @@ lt:
 # ➤ 📄 Экспорт зависимостей poetry в requirements.txt
 req:
 	poetry export --without-hashes -f requirements.txt -o requirements.txt
+
+# 🔄 Обновить dev ветку из main с ребейзом и пушем
+update-dev:
+	@git checkout main
+	@git pull origin main
+	@git checkout dev
+	@git rebase main
+	@git push --force-with-lease
