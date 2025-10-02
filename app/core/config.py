@@ -20,6 +20,7 @@ class ApiV1Prefix(BaseModel):
     users: str = "/users"
     messages: str = "/messages"
     products: str = "/products"
+    recipes: str = "/recipes"
 
 
 class ApiPrefix(BaseModel):
