@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -28,3 +28,9 @@ class RecipeResponse(BaseModel):
     body: str
     user_id: int
     products: List[ProductInRecipe]
+
+
+class RecipeUpdateRequest(BaseModel):
+    title: Optional[str] = None
+    body: Optional[str] = None
+    products_info: Optional[List[ProductInfo]] = None
