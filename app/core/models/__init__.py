@@ -5,6 +5,7 @@ __all__ = (
     "User",
     "Profile",
     "Product",
+    "Recipe",
 )
 
 from .access_token import AccessToken
@@ -13,3 +14,4 @@ from .db_helper import db_helper
 from .user import User
 from .profile import Profile
 from .product import Product
+from .recipe import Recipe

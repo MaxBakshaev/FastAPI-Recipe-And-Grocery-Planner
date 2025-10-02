@@ -12,7 +12,8 @@ from .mixins.id_int_pk import IdIntPkMixin
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
-    from core.models import Profile
+    from .profile import Profile
+    from .recipe import Recipe
 
 
 class User(Base, IdIntPkMixin, SQLAlchemyBaseUserTable[UserIdType]):
@@ -20,6 +21,7 @@ class User(Base, IdIntPkMixin, SQLAlchemyBaseUserTable[UserIdType]):
 
     username: Mapped[str] = mapped_column(String(32), unique=True)
     profile: Mapped["Profile"] = relationship("Profile", back_populates="user")
+    recipes: Mapped[list["Recipe"]] = relationship(back_populates="user")
 
     @classmethod
     def get_db(cls, session: "AsyncSession"):
