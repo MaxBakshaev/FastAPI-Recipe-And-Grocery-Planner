@@ -6,6 +6,7 @@ __all__ = (
     "Profile",
     "Product",
     "Recipe",
+    "RecipeProductAssociation",
 )
 
 from .access_token import AccessToken
@@ -15,3 +16,4 @@ from .user import User
 from .profile import Profile
 from .product import Product
 from .recipe import Recipe
+from .recipe_product_association import RecipeProductAssociation
