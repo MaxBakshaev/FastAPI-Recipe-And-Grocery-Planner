@@ -49,6 +49,10 @@ down:
 downv:
 	$(DC) down -v
 
+# Удаление всех контейнеров, сетей, томов и образов
+clean:
+	$(DC) down --volumes --rmi all
+	
 # Удаление образов <none>
 none:
 	docker image prune -f
