@@ -5,13 +5,13 @@ from pydantic import BaseModel, ConfigDict, Field
 class ProductInfo(BaseModel):
     product_id: int = Field(..., gt=0)
     quantity: int = Field(..., ge=0)
-    calories_per_unit: int = Field(..., ge=0)
+    calories_per_unit: Optional[float] = Field(None, ge=0)
 
 
 class ProductInRecipe(BaseModel):
     product_id: int
     quantity: int
-    calories_per_unit: int
+    calories_per_unit: float
 
 
 class RecipeCreateRequest(BaseModel):

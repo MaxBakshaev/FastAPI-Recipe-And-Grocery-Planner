@@ -45,11 +45,18 @@ async def register_user(
     password: str = Form(...),
     user_manager: UserManager = Depends(get_user_manager),
 ):
-    user_create = UserCreate(username=username, email=email, password=password)
+    user_create = UserCreate(
+        username=username,
+        email=email,
+        password=password,
+    )
 
     try:
         await user_manager.create(user_create)
-        return RedirectResponse(url="/user/login?success=1", status_code=HTTP_302_FOUND)
+        return RedirectResponse(
+            url="/user/login?success=1",
+            status_code=HTTP_302_FOUND,
+        )
     except UserAlreadyExists:
         return templates.TemplateResponse(
             "register.html",
@@ -103,7 +110,11 @@ async def login(
     user_manager: UserManager = Depends(get_user_manager),
     access_tokens_db=Depends(get_access_tokens_db),
 ):
-    user = await authenticate_user(email, password, user_manager)
+    user = await authenticate_user(
+        email,
+        password,
+        user_manager,
+    )
 
     if not user:
         return templates.TemplateResponse(
@@ -119,7 +130,10 @@ async def login(
     )
     token = await strategy.write_token(user)
 
-    response = RedirectResponse(url="/user/profile", status_code=HTTP_302_FOUND)
+    response = RedirectResponse(
+        url="/user/profile",
+        status_code=HTTP_302_FOUND,
+    )
     response.set_cookie(
         "access_token",
         value=token,
@@ -155,8 +169,60 @@ async def logout(
     )
     token = request.cookies.get("access_token")
 
-    response = await authentication_backend_cookie.logout(strategy, user, token)
+    response = await authentication_backend_cookie.logout(
+        strategy,
+        user,
+        token,
+    )
     response = RedirectResponse(url="/", status_code=302)
     response.delete_cookie("access_token")
 
     return response
+
+
+# @router.post("/recipes/", response_model=RecipeResponse)
+# async def create_recipe(
+#     recipe_data: RecipeCreateRequest,
+#     session: AsyncSession = Depends(db_helper.session_getter),
+#     current_user: User = Depends(current_active_user_bearer),
+# ):
+#     print("Incoming recipe_data:", recipe_data)
+
+#     associations = []
+#     for pi in recipe_data.products_info:
+#         if pi.calories_per_unit is None:
+#             product = await session.get(Product, pi.product_id)
+#             if not product:
+#                 raise HTTPException(404, "Продукт не найден")
+#             cal = product.calories_per_unit
+#         else:
+#             cal = pi.calories_per_unit
+
+#         assoc = RecipeProductAssociation(
+#             product_id=pi.product_id,
+#             quantity=pi.quantity,
+#             calories_per_unit=cal,
+#         )
+#         associations.append(assoc)
+
+#     recipe = Recipe(
+#         title=recipe_data.title,
+#         body=recipe_data.body,
+#         user_id=current_user.id,
+#     )
+#     session.add(recipe)
+#     await session.flush()
+
+#     for assoc in associations:
+#         assoc.recipe_id = recipe.id
+#         session.add(assoc)
+
+#     await session.commit()
+
+#     result = await session.execute(
+#         select(Recipe)
+#         .options(selectinload(Recipe.product_associations))
+#         .where(Recipe.id == recipe.id)
+#     )
+#     created = result.scalar_one()
+#     return created

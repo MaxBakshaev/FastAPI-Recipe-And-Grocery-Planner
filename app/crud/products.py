@@ -8,7 +8,7 @@ from core.schemas.product import ProductCreate, ProductUpdate
 
 async def get_products(session: AsyncSession) -> list[Product]:
     """Возвращает все продукты"""
-    stmt = select(Product).order_by(Product.id)
+    stmt = select(Product).order_by(Product.name)
     result: Result = await session.execute(stmt)
     products = result.scalars().all()
     return list(products)
