@@ -137,7 +137,10 @@ async def partial_update_recipe(
     return map_recipe_to_response(updated_recipe)
 
 
-@router.delete("/{recipe_id}/", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{recipe_id}/",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
 async def delete_recipe(
     recipe_id: int,
     session: AsyncSession = Depends(db_helper.session_getter),
@@ -146,7 +149,9 @@ async def delete_recipe(
     """Удаление рецепта по id"""
     try:
         await recipes.delete_recipe(
-            session=session, recipe_id=recipe_id, user_id=current_user.id
+            session=session,
+            recipe_id=recipe_id,
+            user_id=current_user.id,
         )
     except ValueError:
         raise HTTPException(

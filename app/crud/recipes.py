@@ -1,10 +1,12 @@
 from typing import List, Optional, Tuple
 
+from fastapi import HTTPException
 from sqlalchemy import Result, select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from core.models import Recipe, RecipeProductAssociation
+from core.schemas.recipe import ProductInfo
+from core.models import Product, Recipe, RecipeProductAssociation
 
 
 async def get_recipes_with_products(session: AsyncSession) -> list[Recipe]:
@@ -24,31 +26,40 @@ async def create_recipe_with_products(
     title: str,
     body: str,
     user_id: int,
-    # [(product_id, quantity, calories_per_unit), ...]
-    products_info: List[Tuple[int, int, int]],
+    products_info: List[ProductInfo],
 ) -> Recipe:
     """
     Создает рецепт и связывает с продуктами через RecipeProductAssociation.
-    Возвращает рецепт с продуктами.
-
-    products_info — список кортежей с информацией о продуктах:
-    (product_id, quantity в граммах, calories_per_unit)
+    Автоматически подставляет calories_per_unit, если он не указан.
     """
 
     recipe = Recipe(title=title, body=body, user_id=user_id)
-
     session.add(recipe)
-    await session.flush()  # получение recipe.id
+    await session.flush()  # Получаем recipe.id
 
-    associations = [
-        RecipeProductAssociation(
+    associations = []
+
+    for product_info in products_info:
+        # Если калории не указаны — достаём из базы
+        if product_info.calories_per_unit is None:
+            db_product = await session.get(Product, product_info.product_id)
+            if not db_product:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Продукт ID {product_info.product_id} не найден",
+                )
+            calories_per_unit = db_product.calories_per_unit
+        else:
+            calories_per_unit = product_info.calories_per_unit
+
+        assoc = RecipeProductAssociation(
             recipe_id=recipe.id,
-            product_id=product_id,
-            quantity=quantity,
+            product_id=product_info.product_id,
+            quantity=product_info.quantity,
             calories_per_unit=calories_per_unit,
         )
-        for product_id, quantity, calories_per_unit in products_info
-    ]
+        associations.append(assoc)
+
     session.add_all(associations)
     await session.commit()
 
@@ -57,9 +68,7 @@ async def create_recipe_with_products(
         .options(selectinload(Recipe.product_associations))
         .where(Recipe.id == recipe.id)
     )
-    recipe = result.scalar_one()
-
-    return recipe
+    return result.scalar_one()
 
 
 async def get_recipe_with_products_by_id(
@@ -81,7 +90,7 @@ async def update_recipe_with_products(
     title: str,
     body: str,
     user_id: int,
-    products_info: List[Tuple[int, int, int]],
+    products_info: List[Tuple[int, int, float]],
 ) -> Recipe:
     """
     Обновляет рецепт и связанные продукты.
@@ -141,7 +150,7 @@ async def partial_update_recipe_with_products(
     user_id: int,
     title: Optional[str] = None,
     body: Optional[str] = None,
-    products_info: Optional[List[Tuple[int, int, int]]] = None,
+    products_info: Optional[List[Tuple[int, int, float]]] = None,
 ) -> Recipe:
     """Частичто обновляет рецепт"""
     result = await session.execute(

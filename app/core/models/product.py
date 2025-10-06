@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import String
+from sqlalchemy import Float, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .mixins.id_int_pk import IdIntPkMixin
@@ -16,8 +16,9 @@ if TYPE_CHECKING:
 class Product(Base, IdIntPkMixin):
 
     name: Mapped[str] = mapped_column(String(32), unique=True, index=True)
-    calories_per_gram: Mapped[int] = mapped_column(
-        default=0,
+    calories_per_gram: Mapped[float] = mapped_column(
+        Float,
+        default=0.0,
         server_default="0",
     )
 

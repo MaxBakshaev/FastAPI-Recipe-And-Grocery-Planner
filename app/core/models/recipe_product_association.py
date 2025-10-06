@@ -27,8 +27,8 @@ class RecipeProductAssociation(Base):
         server_default="0",
     )
     # калории на грамм
-    calories_per_unit: Mapped[int] = mapped_column(
-        default=0,
+    calories_per_unit: Mapped[float] = mapped_column(
+        default=0.0,
         server_default="0",
     )
 
