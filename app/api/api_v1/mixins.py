@@ -1,8 +1,9 @@
 from core.models import Recipe
-from core.schemas.recipe import ProductInRecipe, RecipeResponse
+from core.schemas import ProductInRecipe, RecipeResponse
 
 
 def map_recipe_to_response(recipe: Recipe) -> RecipeResponse:
+    """Преобразует объект модели Recipe в RecipeResponse"""
     return RecipeResponse(
         id=recipe.id,
         title=recipe.title,
@@ -12,7 +13,7 @@ def map_recipe_to_response(recipe: Recipe) -> RecipeResponse:
             ProductInRecipe(
                 product_id=assoc.product_id,
                 quantity=assoc.quantity,
-                calories_per_unit=assoc.calories_per_unit,
+                calories_per_gram=assoc.calories_per_gram,
             )
             for assoc in recipe.product_associations
         ],

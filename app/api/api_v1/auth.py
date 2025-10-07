@@ -7,7 +7,7 @@ https://fastapi-users.github.io/fastapi-users/latest/configuration/routers/reset
 
 from fastapi import APIRouter
 
-from core.schemas.user import UserCreate, UserRead
+from core.schemas import UserCreate, UserRead
 
 from .fastapi_users import fastapi_users_bearer
 from api.dependencies.authentication import authentication_backend_bearer

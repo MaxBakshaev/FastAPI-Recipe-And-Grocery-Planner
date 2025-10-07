@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud import products
 from core.models import db_helper
-from core.schemas.product import Product, ProductCreate, ProductUpdate
+from core.schemas import Product, ProductCreate, ProductUpdate
 from core.config import settings
 
 router = APIRouter(

@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter
 
-from core.schemas.user import UserRead, UserUpdate
+from core.schemas import UserRead, UserUpdate
 
 from .fastapi_users import fastapi_users_bearer
 from core.config import settings

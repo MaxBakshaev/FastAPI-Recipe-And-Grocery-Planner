@@ -6,8 +6,8 @@ from api.api_v1.fastapi_users import (
     current_active_super_user_bearer,
 )
 from core.config import settings
-from core.models.user import User
-from core.schemas.user import UserRead
+from core.models import User
+from core.schemas import UserRead
 
 router = APIRouter(
     prefix=settings.api.v1.messages,

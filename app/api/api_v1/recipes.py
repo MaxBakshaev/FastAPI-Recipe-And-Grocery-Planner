@@ -5,13 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.api_v1.fastapi_users import current_active_user_bearer
 from api.api_v1.mixins import map_recipe_to_response
 from crud import recipes
+from core.config import settings
 from core.models import db_helper, User
-from core.schemas.recipe import (
+from core.schemas import (
     RecipeCreateRequest,
     RecipeResponse,
     RecipeUpdateRequest,
 )
-from core.config import settings
 
 router = APIRouter(
     prefix=settings.api.v1.recipes,
@@ -23,7 +23,7 @@ router = APIRouter(
 async def get_recipes_with_products(
     session: AsyncSession = Depends(db_helper.session_getter),
 ):
-    """Получение списка рецептов с продуктами"""
+    """Возвращает список рецептов с продуктами"""
     recipe_list = await recipes.get_recipes_with_products(session=session)
 
     return [map_recipe_to_response(recipe) for recipe in recipe_list]
@@ -39,17 +39,14 @@ async def create_recipe_with_products(
     session: AsyncSession = Depends(db_helper.session_getter),
     current_user: User = Depends(current_active_user_bearer),
 ):
-    """Возвращает все рецепты с продуктами"""
+    """Создает и возвращает рецепт с продуктами"""
     try:
         recipe = await recipes.create_recipe_with_products(
             session=session,
             title=recipe_data.title,
             body=recipe_data.body,
             user_id=current_user.id,
-            products_info=[
-                (p.product_id, p.quantity, p.calories_per_unit)
-                for p in recipe_data.products_info
-            ],
+            products_info=recipe_data.products_info,
         )
 
     except Exception as e:
@@ -89,7 +86,7 @@ async def update_recipe_with_products(
             body=recipe_data.body,
             user_id=current_user.id,
             products_info=[
-                (p.product_id, p.quantity, p.calories_per_unit)
+                (p.product_id, p.quantity, p.calories_per_gram)
                 for p in recipe_data.products_info
             ],
         )
@@ -110,7 +107,7 @@ async def partial_update_recipe(
     session: AsyncSession = Depends(db_helper.session_getter),
     current_user: User = Depends(current_active_user_bearer),
 ):
-    """Частичное обновление рецепта по id"""
+    """Частично обновляет рецепт по id"""
     try:
         updated_recipe = await recipes.partial_update_recipe_with_products(
             session=session,
@@ -120,13 +117,14 @@ async def partial_update_recipe(
             body=recipe_data.body,
             products_info=(
                 [
-                    (p.product_id, p.quantity, p.calories_per_unit)
+                    (p.product_id, p.quantity, p.calories_per_gram or 0.0)
                     for p in recipe_data.products_info
                 ]
                 if recipe_data.products_info is not None
                 else None
             ),
         )
+
     except ValueError as ve:
         raise HTTPException(status_code=404, detail=str(ve))
     except PermissionError as pe:
@@ -146,7 +144,7 @@ async def delete_recipe(
     session: AsyncSession = Depends(db_helper.session_getter),
     current_user: User = Depends(current_active_user_bearer),
 ):
-    """Удаление рецепта по id"""
+    """Удаляет рецепт по id"""
     try:
         await recipes.delete_recipe(
             session=session,

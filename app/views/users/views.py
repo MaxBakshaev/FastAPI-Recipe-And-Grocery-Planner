@@ -5,13 +5,15 @@ from fastapi.responses import RedirectResponse
 from fastapi_users.exceptions import UserAlreadyExists
 
 from api.api_v1.fastapi_users import current_active_user_cookie
-from api.dependencies.authentication.user_manager import get_user_manager
-from api.dependencies.authentication import authentication_backend_cookie
-from api.dependencies.authentication.access_tokens import get_access_tokens_db
-from core.models.user import User
+from api.dependencies.authentication import (
+    get_user_manager,
+    authentication_backend_cookie,
+    get_access_tokens_db,
+)
+from core.models import User
 from crud.users import authenticate_user
-from core.authentication.user_manager import UserManager
-from core.schemas.user import UserCreate
+from core.authentication import UserManager
+from core.schemas import UserCreate
 from utils.templates import templates
 
 
@@ -190,18 +192,18 @@ async def logout(
 
 #     associations = []
 #     for pi in recipe_data.products_info:
-#         if pi.calories_per_unit is None:
+#         if pi.calories_per_gram is None:
 #             product = await session.get(Product, pi.product_id)
 #             if not product:
 #                 raise HTTPException(404, "Продукт не найден")
-#             cal = product.calories_per_unit
+#             cal = product.calories_per_gram
 #         else:
-#             cal = pi.calories_per_unit
+#             cal = pi.calories_per_gram
 
 #         assoc = RecipeProductAssociation(
 #             product_id=pi.product_id,
 #             quantity=pi.quantity,
-#             calories_per_unit=cal,
+#             calories_per_gram=cal,
 #         )
 #         associations.append(assoc)
 

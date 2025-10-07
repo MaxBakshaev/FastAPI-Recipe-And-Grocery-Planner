@@ -4,17 +4,16 @@ import asyncio
 import contextlib
 from os import getenv
 
-from api.dependencies.authentication import get_users_db
-from api.dependencies.authentication import get_user_manager
-from core.authentication.user_manager import UserManager
-from core.models import db_helper
-from core.models.user import User
-from core.schemas.user import UserCreate
+from api.dependencies.authentication import get_users_db, get_user_manager
+from core.authentication import UserManager
+from core.models import db_helper, User
+from core.schemas import UserCreate
 
 
 get_users_db_context = contextlib.asynccontextmanager(get_users_db)
 get_user_manager_context = contextlib.asynccontextmanager(get_user_manager)
 
+default_username = getenv("DEFAULT_USERNAME", "admin")
 default_email = getenv("DEFAULT_EMAIL", "admin@admin.com")
 default_password = getenv("DEFAULT_PASSWORD", "abc")
 default_is_active = True
@@ -34,6 +33,7 @@ async def create_user(
 
 
 async def create_superuser(
+    username: str = default_username,
     email: str = default_email,
     password: str = default_password,
     is_active: bool = default_is_active,
@@ -41,6 +41,7 @@ async def create_superuser(
     is_verified: bool = default_is_verified,
 ):
     user_create = UserCreate(
+        username=username,
         email=email,
         password=password,
         is_active=is_active,
