@@ -3,7 +3,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Product
-from core.schemas.product import ProductCreate, ProductUpdate
+from core.schemas import ProductCreate, ProductUpdate
 
 
 async def get_products(session: AsyncSession) -> list[Product]:

@@ -27,7 +27,7 @@ class RecipeProductAssociation(Base):
         server_default="0",
     )
     # калории на грамм
-    calories_per_unit: Mapped[float] = mapped_column(
+    calories_per_gram: Mapped[float] = mapped_column(
         default=0.0,
         server_default="0",
     )
@@ -38,4 +38,4 @@ class RecipeProductAssociation(Base):
     @property
     def total_calories(self) -> int:
         """Возвращает общую калорийность рецепта"""
-        return self.quantity * self.calories_per_unit
+        return self.quantity * self.calories_per_gram

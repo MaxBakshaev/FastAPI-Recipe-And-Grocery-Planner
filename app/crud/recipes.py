@@ -5,7 +5,7 @@ from sqlalchemy import Result, select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from core.schemas.recipe import ProductInfo
+from core.schemas import ProductInfo
 from core.models import Product, Recipe, RecipeProductAssociation
 
 
@@ -30,7 +30,7 @@ async def create_recipe_with_products(
 ) -> Recipe:
     """
     Создает рецепт и связывает с продуктами через RecipeProductAssociation.
-    Автоматически подставляет calories_per_unit, если он не указан.
+    Автоматически подставляет calories_per_gram, если он не указан.
     """
 
     recipe = Recipe(title=title, body=body, user_id=user_id)
@@ -41,22 +41,22 @@ async def create_recipe_with_products(
 
     for product_info in products_info:
         # Если калории не указаны — достаём из базы
-        if product_info.calories_per_unit is None:
+        if product_info.calories_per_gram is None:
             db_product = await session.get(Product, product_info.product_id)
             if not db_product:
                 raise HTTPException(
                     status_code=404,
                     detail=f"Продукт ID {product_info.product_id} не найден",
                 )
-            calories_per_unit = db_product.calories_per_unit
+            calories_per_gram = db_product.calories_per_gram
         else:
-            calories_per_unit = product_info.calories_per_unit
+            calories_per_gram = product_info.calories_per_gram
 
         assoc = RecipeProductAssociation(
             recipe_id=recipe.id,
             product_id=product_info.product_id,
             quantity=product_info.quantity,
-            calories_per_unit=calories_per_unit,
+            calories_per_gram=calories_per_gram,
         )
         associations.append(assoc)
 
@@ -96,7 +96,7 @@ async def update_recipe_with_products(
     Обновляет рецепт и связанные продукты.
 
     products_info — список кортежей:
-    (product_id, quantity, calories_per_unit)
+    (product_id, quantity, calories_per_gram)
     """
 
     result = await session.execute(
@@ -126,9 +126,9 @@ async def update_recipe_with_products(
             recipe_id=recipe_id,
             product_id=product_id,
             quantity=quantity,
-            calories_per_unit=calories_per_unit,
+            calories_per_gram=calories_per_gram,
         )
-        for product_id, quantity, calories_per_unit in products_info
+        for product_id, quantity, calories_per_gram in products_info
     ]
     session.add_all(associations)
 
@@ -181,9 +181,9 @@ async def partial_update_recipe_with_products(
                 recipe_id=recipe_id,
                 product_id=product_id,
                 quantity=quantity,
-                calories_per_unit=calories_per_unit,
+                calories_per_gram=calories_per_gram,
             )
-            for product_id, quantity, calories_per_unit in products_info
+            for product_id, quantity, calories_per_gram in products_info
         ]
         session.add_all(associations)
 
