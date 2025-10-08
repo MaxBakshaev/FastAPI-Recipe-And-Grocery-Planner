@@ -5,25 +5,16 @@
 {% block content %}
 <div style="display: flex; align-items: center; justify-content: center; padding-top: 100px; box-sizing: border-box;">
   <div class="container tm-container-inner-2 tm-contact-section" style="max-width: 400px; width: 100%;">
-    <h2 class="tm-section-title tm-mb-45 text-center">Войти</h2>
-    <form method="post" action="{{ url_for('login') }}" class="tm-contact-form">
+    <h2 class="tm-section-title tm-mb-45 text-center">Вход</h2>
+    <form id="login-form" class="tm-contact-form">
       <div class="form-group">
-        <input type="email" name="email" class="form-control" placeholder="Email" required />
+        <input type="email" id="email" class="form-control" placeholder="Email" required />
       </div>
       <div class="form-group">
-        <input type="password" name="password" class="form-control" placeholder="Пароль" required />
+        <input type="password" id="password" class="form-control" placeholder="Пароль" required />
       </div>
-      {% if success %}
-        <p class="text-center" 
-          style="color: green; margin-bottom: 20px;">
-          {{ success }}
-        </p>
-      {% endif %}
-      {% if error %}
-      <p class="text-center" 
-      style="color: red; margin-bottom: 20px;"
-      >{{ error }}</p>
-      {% endif %}
+
+      <p id="message" class="text-center" style="margin-bottom: 20px;"></p>
 
       <div class="form-group text-center">
         <button type="submit" class="tm-btn tm-btn-success">Вход</button>
@@ -31,4 +22,34 @@
     </form>
   </div>
 </div>
+
+<script>
+document.getElementById("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch("/api/v1/auth/login", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+          username: email,  // FastAPI Users использует "username" вместо "email"
+          password: password,
+      }),
+  });
+
+  if (res.ok) {
+      const data = await res.json();
+      localStorage.setItem("access_token", data.access_token);
+      window.location.href = "/profile";
+  } else {
+      const error = await res.json();
+      document.getElementById("message").textContent = error.detail || "Ошибка входа";
+  }
+});
+</script>
+
 {% endblock %}

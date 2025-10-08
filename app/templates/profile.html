@@ -1,7 +1,29 @@
 {% extends "base.html" %}
-
 {% block title %}{{ title }}{% endblock %}
-
 {% block content %}
+<h2>Профиль</h2>
+<div id="profile-info">Загрузка...</div>
 
+<script>
+  async function loadProfile() {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+    const res = await fetch("/api/profile", {
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    });
+    if (!res.ok) {
+      localStorage.removeItem("access_token");
+      window.location.href = "/login";
+      return;
+    }
+    const user = await res.json();
+    document.getElementById("profile-info").innerText = `Email: ${user.email}, ID: ${user.id}`;
+  }
+  loadProfile();
+</script>
 {% endblock %}
