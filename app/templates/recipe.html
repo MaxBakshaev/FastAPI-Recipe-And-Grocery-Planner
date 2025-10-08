@@ -68,11 +68,9 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
         try {
-            const res = await fetch('http://127.0.0.1:8000/api/v1/products/');
+            const res = await fetch('/api/v1/products/');
             productsList = await res.json();
-
             productsList.sort((a, b) => a.name.localeCompare(b.name, 'ru', { sensitivity: 'base' }));
-
             populateAllProductSelects();
         } catch (err) {
             alert("Ошибка при загрузке списка продуктов");
@@ -103,23 +101,18 @@
 
         productBlock.innerHTML = ` 
             <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-                <!-- Метка для выбора продукта -->
                 <div style="flex: 3; display: flex; flex-direction: column;">
-                    <label for="product_id" style="font-weight: 700; margin-bottom: 8px;">Продукты:</label>
+                    <label style="font-weight: 700; margin-bottom: 8px;">Продукты:</label>
                     <select name="product_id" required
                             style="font-size: 20px; padding: 12px; border: 1px solid #ccc; border-radius: 6px; min-height: 50px;">
                         <option value="">-- Выберите продукт --</option>
                     </select>
                 </div>
-            
-                <!-- Метка и поле для грамм -->
                 <div style="flex: 1; display: flex; flex-direction: column;">
                     <label style="font-weight: 700; margin-bottom: 8px;">Граммы:</label>
                     <input type="number" name="quantity" min="0" required
                         style="font-size: 20px; padding: 12px; border: 1px solid #ccc; border-radius: 6px; min-height: 50px;">
                 </div>
-            
-                <!-- Кнопка удаления -->
                 <button type="button" onclick="removeProduct(this)"
                         style="height: 30px; width: 30px; font-size: 30px; color: white; background-color: red; border: none; 
                         display: flex; justify-content: center; align-items: center; margin-top: 30px; cursor: pointer;">×</button>
@@ -159,15 +152,10 @@
                 return;
             }
 
-            products_info.push({ product_id, quantity, calories_per_gram: 0 });
+            products_info.push({ product_id, quantity });
         }
 
-        const payload = {
-            title,
-            body,
-            products_info
-        };
-
+        const payload = { title, body, products_info };
         const token = localStorage.getItem('access_token');
 
         if (!token) {
@@ -176,7 +164,7 @@
         }
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/v1/recipes/', {
+            const response = await fetch('/api/v1/recipes/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -185,21 +173,16 @@
                 body: JSON.stringify(payload)
             });
 
-            if (response.status === 401) {
-                alert('Пожалуйста, войдите в систему');
-                return;
+            if (response.ok) {
+                const result = await response.json();
+                alert("Рецепт успешно создан!");
+                window.location.href = "/recipes";  // Редирект на список рецептов
+            } else {
+                const error = await response.json();
+                alert(error.detail || "Ошибка при создании рецепта");
             }
-
-            const result = await response.json();
-
-            const responseBlock = document.getElementById('response');
-            responseBlock.innerText = JSON.stringify(result, null, 2);
-            responseBlock.hidden = false;
-
         } catch (error) {
-            const responseBlock = document.getElementById('response');
-            responseBlock.innerText = 'Ошибка при отправке: ' + error;
-            responseBlock.hidden = false;
+            alert("Ошибка при отправке: " + error.message);
         }
     });
 </script>

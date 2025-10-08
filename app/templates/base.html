@@ -2,105 +2,135 @@
 <html>
 
 <head>
-	<meta charset="UTF-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>{% block title %}{% endblock %}</title>
 
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet" />    
-	<link href="{{ url_for('static', path='css/templatemo-style.css') }}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet" />
+    <link href="{{ url_for('static', path='css/templatemo-style.css') }}" rel="stylesheet" />
+
+    <style>
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 
-<body> 
-	<div class="container">
-	<!-- Top box -->
-		<!-- Logo & Site Name -->
-		<div class="placeholder">
-			<div class="parallax-window" data-parallax="scroll" data-image-src="{{ url_for('static', path='img/products.png') }}">
-				<div class="tm-header">
-					<div class="row tm-header-inner">
-						<div class="col-md-6 col-12">
-							<img src="{{ url_for('static', path='img/simple-house-logo.png') }}" alt="Logo" class="tm-site-logo" /> 
-							<div class="tm-site-text-box">
-								<h1 class="tm-site-title">Recipe & Grocery Planner</h1>
-								<h6 class="tm-site-description">Планировщик рецептов и покупок</h6>	
-							</div>
-						</div>
-						<nav class="col-md-6 col-12 tm-nav">
-							<ul class="tm-nav-ul">
-								{% if user %}
-									{% if title == "Главная" %}
-										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link active">Главная</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('recipe') }}" class="tm-nav-link">Рецепты</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('profile') }}" class="tm-nav-link">Профиль</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('logout') }}" class="tm-nav-link">Выйти</a></li>
-									{% elif title == "Профиль" %}
-										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link">Главная</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('recipe') }}" class="tm-nav-link">Рецепты</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('profile') }}" class="tm-nav-link active">Профиль</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('logout') }}" class="tm-nav-link">Выйти</a></li>
-									{% elif title == "Создать рецепт" %}
-										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link">Главная</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('recipe') }}" class="tm-nav-link active">Рецепты</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('profile') }}" class="tm-nav-link">Профиль</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('logout') }}" class="tm-nav-link">Выйти</a></li>
-									{% else %}
-										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link">Главная</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('recipe') }}" class="tm-nav-link">Рецепты</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('profile') }}" class="tm-nav-link">Профиль</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('logout') }}" class="tm-nav-link">Выйти</a></li>
-									{% endif %}
-								{% else %}
-									{% if title == "Главная" %}
-										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link active">Главная</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('login') }}" class="tm-nav-link">Войти</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('register') }}" class="tm-nav-link">Регистрация</a></li>
-									{% elif title == "Войти" %}
-										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link">Главная</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('login') }}" class="tm-nav-link active">Войти</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('register') }}" class="tm-nav-link">Регистрация</a></li>
-									{% elif title == "Регистрация" %}
-										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link">Главная</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('login') }}" class="tm-nav-link">Войти</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('register') }}" class="tm-nav-link active">Регистрация</a></li>
-									{% else %}
-										<li class="tm-nav-li"><a href="{{ url_for('home') }}" class="tm-nav-link">Главная</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('login') }}" class="tm-nav-link">Войти</a></li>
-										<li class="tm-nav-li"><a href="{{ url_for('register') }}" class="tm-nav-link">Регистрация</a></li>
-									{% endif %}
-								{% endif %}
-							</ul>
-						</nav>	
-					</div>
-				</div>
-			</div>
-		</div>
+<body>
+    <div class="container">
+        <!-- Top box -->
+        <div class="placeholder">
+            <div class="parallax-window" data-parallax="scroll" data-image-src="{{ url_for('static', path='img/products.png') }}">
+                <div class="tm-header">
+                    <div class="row tm-header-inner">
+                        <div class="col-md-6 col-12">
+                            <img src="{{ url_for('static', path='img/simple-house-logo.png') }}" alt="Logo" class="tm-site-logo" />
+                            <div class="tm-site-text-box">
+                                <h1 class="tm-site-title">Recipe & Grocery Planner</h1>
+                                <h6 class="tm-site-description">Планировщик рецептов и покупок</h6>
+                            </div>
+                        </div>
+                        <nav class="col-md-6 col-12 tm-nav">
+                            <ul class="tm-nav-ul">
+                                <!-- Главная — доступна всем -->
+                                <li class="tm-nav-li menu-home hidden">
+                                    <a href="{{ url_for('home') }}" class="tm-nav-link {% if title == 'Главная' %}active{% endif %}">Главная</a>
+                                </li>
+
+                                <!-- Авторизованные пользователи -->
+                                <li class="tm-nav-li menu-recipes hidden">
+                                    <a href="{{ url_for('recipe') }}" class="tm-nav-link {% if title == 'Рецепты' %}active{% endif %}">Рецепты</a>
+                                </li>
+                                <li class="tm-nav-li menu-profile hidden">
+                                    <a href="{{ url_for('profile') }}" class="tm-nav-link {% if title == 'Профиль' %}active{% endif %}">Профиль</a>
+                                </li>
+                                <li class="tm-nav-li menu-logout hidden">
+                                    <a href="#" class="tm-nav-link" onclick="logout()">Выйти</a>
+                                </li>
+
+                                <!-- Гости -->
+                                <li class="tm-nav-li menu-login hidden">
+                                    <a href="{{ url_for('login') }}" class="tm-nav-link {% if title == 'Войти' %}active{% endif %}">Войти</a>
+                                </li>
+                                <li class="tm-nav-li menu-register hidden">
+                                    <a href="{{ url_for('register') }}" class="tm-nav-link {% if title == 'Регистрация' %}active{% endif %}">Регистрация</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <main>
             {% block content %}{% endblock %}
         </main>
-        
+
         <footer class="tm-footer text-center">
-            <p>Copyright &copy; 2025         
-            | Made by: <a rel="nofollow" href="https://github.com/MaxBakshaev">MaxBakshaev</a></p>
+            <p>Copyright &copy; 2025
+                | Made by: <a rel="nofollow" href="https://github.com/MaxBakshaev">MaxBakshaev</a></p>
         </footer>
     </div>
-            
+
     <script src="{{ url_for('static', path='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', path='js/parallax.min.js') }}"></script>
-    <script>
-		$(document).ready(function(){
-			// Handle click on paging links
-			$('.tm-paging-link').click(function(e){
-				e.preventDefault();
-				
-				var page = $(this).text().toLowerCase();
-				$('.tm-gallery-page').addClass('hidden');
-				$('#tm-gallery-page-' + page).removeClass('hidden');
-				$('.tm-paging-link').removeClass('active');
-				$(this).addClass("active");
-			});
-		});
-	</script>
 
+    <script>
+        function logout() {
+            localStorage.removeItem("access_token");
+            window.location.href = "/";
+        }
+
+        function updateMenu() {
+            const isAuth = !!localStorage.getItem("access_token");
+
+            // Показываем общие
+            document.querySelector(".menu-home")?.classList.remove("hidden");
+
+            if (isAuth) {
+                document.querySelector(".menu-recipes")?.classList.remove("hidden");
+                document.querySelector(".menu-profile")?.classList.remove("hidden");
+                document.querySelector(".menu-logout")?.classList.remove("hidden");
+            } else {
+                document.querySelector(".menu-login")?.classList.remove("hidden");
+                document.querySelector(".menu-register")?.classList.remove("hidden");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", updateMenu);
+    </script>
+	<script>
+		async function logout() {
+		  const token = localStorage.getItem("access_token");
+	  
+		  if (!token) {
+			window.location.href = "/";
+			return;
+		  }
+	  
+		  try {
+			const res = await fetch("/api/v1/auth/logout", {
+			  method: "POST",
+			  headers: {
+				"Authorization": "Bearer " + token,
+				"Content-Type": "application/json",
+			  },
+			});
+	  
+			if (res.ok) {
+			  localStorage.removeItem("access_token");
+			  window.location.href = "/";
+			} else {
+			  console.error("Ошибка при выходе:", await res.text());
+			  alert("Ошибка при выходе.");
+			}
+		  } catch (error) {
+			console.error("Ошибка сети при выходе:", error);
+			alert("Ошибка сети. Попробуйте позже.");
+		  }
+		}
+	  </script>
 </body>
+
 </html>
