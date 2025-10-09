@@ -1,29 +1,31 @@
 {% extends "base.html" %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-<h2>Профиль</h2>
-<div id="profile-info">Загрузка...</div>
 
-<script>
-  async function loadProfile() {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      window.location.href = "/login";
-      return;
-    }
-    const res = await fetch("/api/profile", {
-      headers: {
-        "Authorization": "Bearer " + token
-      }
-    });
-    if (!res.ok) {
-      localStorage.removeItem("access_token");
-      window.location.href = "/login";
-      return;
-    }
-    const user = await res.json();
-    document.getElementById("profile-info").innerText = `Email: ${user.email}, ID: ${user.id}`;
-  }
-  loadProfile();
-</script>
+<!-- Заголовок страницы -->
+<header class="row tm-welcome-section">
+  <h2 class="col-12 text-center tm-section-title">Профиль пользователя</h2>
+</header>
+
+<!-- Профиль и рецепты: две колонки -->
+<div class="tm-container-inner tm-mb-50">
+  <div class="d-flex" style="display: flex; gap: 30px; align-items: flex-start;">
+
+    <!-- Левая колонка: информация о пользователе-->
+    <div style="flex: 0 0 30%; background-color: #f8f8f8; padding: 30px; border-radius: 10px;">
+      <h4 class="tm-gallery-title text-center">Информация о пользователе</h4>
+      <div id="profile-info">Загрузка...</div>
+    </div>
+
+    <!-- Правая колонка: рецепты -->
+    <div style="flex: 1; background-color: #f8f8f8; padding: 30px; border-radius: 10px;">
+      <h4 class="tm-gallery-title text-center">Мои рецепты</h4>
+      <div id="recipes-list">Загрузка рецептов...</div>
+    </div>
+
+  </div>
+</div>
+
+{% block extra_js %}<script src="{{ url_for('static', path='js/profile.js') }}"></script>{% endblock %}
+
 {% endblock %}
