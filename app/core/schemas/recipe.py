@@ -28,6 +28,8 @@ class RecipeResponse(BaseModel):
     body: str
     user_id: int
     products: List[ProductInRecipe]
+    total_calories: int
+    total_quantity: int
 
 
 class RecipeUpdateRequest(BaseModel):

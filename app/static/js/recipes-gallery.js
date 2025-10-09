@@ -1,34 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
     const gallery = document.getElementById('recipe-gallery');
-
+  
     fetch('/api/v1/recipes/')
-        .then(response => response.json())
-        .then(data => {
-            if (!data.length) {
-                gallery.innerHTML = '<p class="text-center">Рецепты не найдены</p>';
-                return;
-            }
-
-            data.forEach(recipe => {
-                const article = document.createElement('article');
-                article.className = 'col-lg-3 col-md-4 col-sm-6 col-12 tm-gallery-item';
-
-                article.innerHTML = `
-                    <figure>
-                        <img src="${recipe.image_url}" alt="${recipe.title}" class="img-fluid tm-gallery-img" />
-                        <figcaption>
-                            <h4 class="tm-gallery-title">${recipe.title}</h4>
-                            <p class="tm-gallery-description">${recipe.description}</p>
-                            <p class="tm-gallery-price">${recipe.calories} ккал / ${recipe.weight} г.</p>
-                        </figcaption>
-                    </figure>
-                `;
-
-                gallery.appendChild(article);
-            });
-        })
-        .catch(err => {
-            console.error('Ошибка загрузки рецептов:', err);
-            gallery.innerHTML = '<p class="text-center">Не удалось загрузить рецепты</p>';
+      .then(response => {
+        if (!response.ok) throw new Error("Ошибка загрузки данных");
+        return response.json();
+      })
+      .then(data => {
+        if (!Array.isArray(data) || data.length === 0) {
+          gallery.innerHTML = '<p class="text-center">Рецепты не найдены</p>';
+          return;
+        }
+  
+        data.forEach(recipe => {
+          const article = document.createElement('article');
+          article.className = 'recipe-article';
+  
+          const imageUrl = recipe.image_url || '/static/img/products.jpg';
+  
+          article.innerHTML = `
+            <div class="recipe-container">
+              <div class="recipe-image-wrapper">
+                <img src="${imageUrl}" alt="${recipe.title}" class="recipe-img" />
+                <p class="recipe-meta">${recipe.total_calories} ккал / ${recipe.total_quantity} г.</p>
+              </div>
+              <div class="recipe-info">
+                <h4 class="recipe-title">${recipe.title}</h4>
+                <p class="recipe-description">${recipe.body}</p>
+              </div>
+            </div>
+          `;
+  
+          gallery.appendChild(article);
         });
-});
+      })
+      .catch(err => {
+        console.error('Ошибка загрузки рецептов:', err);
+        gallery.innerHTML = '<p class="text-center">Не удалось загрузить рецепты</p>';
+      });
+  });

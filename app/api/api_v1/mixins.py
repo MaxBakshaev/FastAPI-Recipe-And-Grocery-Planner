@@ -17,4 +17,6 @@ def map_recipe_to_response(recipe: Recipe) -> RecipeResponse:
             )
             for assoc in recipe.product_associations
         ],
+        total_calories=recipe.total_calories,
+        total_quantity=recipe.total_quantity,
     )
