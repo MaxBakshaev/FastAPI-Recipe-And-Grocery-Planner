@@ -1,7 +1,11 @@
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.fastapi_users import current_active_user_bearer
+from core.models import db_helper, Recipe, User
 from utils.templates import templates
 
 router = APIRouter(tags=["Views"])
@@ -54,15 +58,36 @@ async def profile_page(request: Request):
     )
 
 
-@router.get("/api/profile")
+@router.get("/profile_info")
 async def api_profile(
     user=Depends(current_active_user_bearer),
+    session: AsyncSession = Depends(db_helper.session_getter),
 ):
-    # Защищённый API, который возвращает данные пользователя
+    result = await session.execute(
+        select(User)
+        .options(
+            selectinload(User.recipes).selectinload(
+                Recipe.product_associations,
+            ),
+        )
+        .where(User.id == user.id)
+    )
+    db_user = result.scalar_one()
+
     return {
-        "id": str(user.id),
-        "email": user.email,
-        "username": user.username,
+        "id": str(db_user.id),
+        "email": db_user.email,
+        "username": db_user.username,
+        "recipes": [
+            {
+                "id": recipe.id,
+                "title": recipe.title,
+                "body": recipe.body,
+                "total_quantity": recipe.total_quantity,
+                "total_calories": recipe.total_calories,
+            }
+            for recipe in db_user.recipes
+        ],
     }
 
 
@@ -75,11 +100,3 @@ async def recipe(request: Request):
             "title": "Рецепты",
         },
     )
-
-
-@router.get("/api/me")
-async def get_me(user=Depends(current_active_user_bearer)):
-    return {
-        "email": user.email,
-        "id": str(user.id),
-    }

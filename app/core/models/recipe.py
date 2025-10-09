@@ -41,9 +41,13 @@ class Recipe(Base, IdIntPkMixin):
     @property
     def total_quantity(self) -> int:
         """Возвращает суммарное количество (в граммах) всех продуктов"""
-        return sum(assoc.quantity for assoc in self.product_associations)
+        return int(
+            sum(assoc.quantity for assoc in self.product_associations),
+        )
 
     @property
     def total_calories(self) -> int:
         """Возвращает общую калорийность рецепта"""
-        return sum(assoc.total_calories for assoc in self.product_associations)
+        return int(
+            sum(assoc.total_calories for assoc in self.product_associations),
+        )
