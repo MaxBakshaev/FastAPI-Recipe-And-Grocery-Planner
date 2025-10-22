@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -21,7 +21,11 @@ class Recipe(Base, IdIntPkMixin):
         default="",
         server_default="",
     )
-
+    image_url: Mapped[Optional[str]] = mapped_column(
+        String(500),
+        nullable=True,
+        default=None
+    )
     product_associations: Mapped[list["RecipeProductAssociation"]] = relationship(
         "RecipeProductAssociation",
         back_populates="recipe",

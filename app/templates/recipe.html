@@ -11,6 +11,17 @@
         <form id="recipe-form" novalidate style="width: 100%;">
 
             <div style="display: flex; flex-direction: column; gap: 40px; margin-bottom: 50px;">
+
+                <!-- Блок для загрузки картинки -->
+                <div style="display: flex; flex-direction: column;">
+                    <label for="recipe-image" style="font-weight: 700; margin-bottom: 10px;">Изображение рецепта:</label>
+                    <input type="file" id="recipe-image" name="image" accept="image/*"
+                        style="font-size: 16px; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+                    <div id="image-preview" style="margin-top: 10px; display: none;">
+                        <img id="preview-img" src="#" alt="Preview" style="max-width: 300px; max-height: 200px; border-radius: 8px;">
+                    </div>
+                </div>
+
                 <div style="display: flex; flex-direction: column;">
                     <label for="title" style="font-weight: 700; margin-bottom: 10px;">Название рецепта:</label>
                     <input type="text" id="title" name="title" required
@@ -65,6 +76,22 @@
 
 <script>
     let productsList = [];
+    let uploadedImageUrl = null;
+
+    // Предпросмотр картинки
+    document.getElementById('recipe-image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('image-preview');
+                const previewImg = document.getElementById('preview-img');
+                previewImg.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
 
     window.addEventListener('DOMContentLoaded', async () => {
         try {
@@ -134,10 +161,36 @@
         const form = e.target;
         const title = form.title.value.trim();
         const body = form.body.value.trim();
+        const imageFile = form.image.files[0];
 
         if (!title || !body) {
             alert('Пожалуйста, заполните название и описание рецепта');
             return;
+        }
+
+        // Загружаем картинку если она есть
+        let imageUrl = null;
+        if (imageFile) {
+            try {
+                const formData = new FormData();
+                formData.append('file', imageFile);
+
+                const uploadResponse = await fetch('/api/v1/recipes/upload/recipe-image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (uploadResponse.ok) {
+                    const uploadResult = await uploadResponse.json();
+                    imageUrl = uploadResult.image_url;
+                } else {
+                    alert('Ошибка при загрузке изображения');
+                    return;
+                }
+            } catch (error) {
+                alert('Ошибка при загрузке изображения: ' + error.message);
+                return;
+            }
         }
 
         const productBlocks = document.querySelectorAll('.product-block');
@@ -155,7 +208,13 @@
             products_info.push({ product_id, quantity });
         }
 
-        const payload = { title, body, products_info };
+        const payload = { 
+            title, 
+            body, 
+            products_info,
+            image_url: imageUrl  // Добавляем URL картинки в payload
+        };
+        
         const token = localStorage.getItem('access_token');
 
         if (!token) {

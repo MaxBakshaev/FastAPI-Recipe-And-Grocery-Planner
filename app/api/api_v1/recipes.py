@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+import os
+import uuid
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -45,6 +47,7 @@ async def create_recipe_with_products(
             session=session,
             title=recipe_data.title,
             body=recipe_data.body,
+            image_url=recipe_data.image_url,
             user_id=current_user.id,
             products_info=recipe_data.products_info,
         )
@@ -84,6 +87,7 @@ async def update_recipe_with_products(
             recipe_id=recipe_id,
             title=recipe_data.title,
             body=recipe_data.body,
+            image_url=recipe_data.image_url,
             user_id=current_user.id,
             products_info=[
                 (p.product_id, p.quantity, p.calories_per_gram)
@@ -115,6 +119,7 @@ async def partial_update_recipe(
             user_id=current_user.id,
             title=recipe_data.title,
             body=recipe_data.body,
+            image_url=recipe_data.image_url,
             products_info=(
                 [
                     (p.product_id, p.quantity, p.calories_per_gram or 0.0)
@@ -160,4 +165,50 @@ async def delete_recipe(
         raise HTTPException(
             status_code=403,
             detail="Not allowed to delete this recipe",
+        )
+
+
+os.makedirs("static/uploads/recipes", exist_ok=True)
+
+
+@router.post("/upload/recipe-image")
+async def upload_recipe_image(file: UploadFile = File(...)):
+    # Проверяем тип файла
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=400,
+            detail="Файл должен быть изображением",
+        )
+
+    # Проверяем размер файла (максимум 5MB)
+    file.file.seek(0, 2)
+    file_size = file.file.tell()
+    file.file.seek(0)
+
+    if file_size > 5 * 1024 * 1024:
+        raise HTTPException(
+            status_code=400,
+            detail="Файл слишком большой. Максимальный размер: 5MB",
+        )
+
+    # Генерируем уникальное имя файла
+    file_extension = (
+        file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    )  # noqa: E501
+    filename = f"{uuid.uuid4()}.{file_extension}"
+    file_path = f"static/uploads/recipes/{filename}"
+
+    try:
+        # Сохраняем файл
+        with open(file_path, "wb") as buffer:
+            content = await file.read()
+            buffer.write(content)
+
+        # Возвращаем URL для доступа к файлу
+        image_url = f"/static/uploads/recipes/{filename}"
+        return {"image_url": image_url}
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Ошибка при сохранении файла: {str(e)}"
         )

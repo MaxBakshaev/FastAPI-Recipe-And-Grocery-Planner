@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import os
 
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
@@ -28,6 +29,12 @@ application = FastAPI(
 application.include_router(api_router)
 application.include_router(views_router)
 
+os.makedirs("static/uploads/recipes", exist_ok=True)
+application.mount(
+    "/static/uploads",
+    StaticFiles(directory="/app/static/uploads"),
+    name="uploads",
+)
 application.mount(
     "/static",
     StaticFiles(directory="app/static"),

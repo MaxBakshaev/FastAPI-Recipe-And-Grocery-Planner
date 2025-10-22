@@ -27,13 +27,19 @@ async def create_recipe_with_products(
     body: str,
     user_id: int,
     products_info: List[ProductInfo],
+    image_url: Optional[str] = None,
 ) -> Recipe:
     """
     Создает рецепт и связывает с продуктами через RecipeProductAssociation.
     Автоматически подставляет calories_per_gram, если он не указан.
     """
 
-    recipe = Recipe(title=title, body=body, user_id=user_id)
+    recipe = Recipe(
+        title=title,
+        body=body,
+        user_id=user_id,
+        image_url=image_url,
+    )
     session.add(recipe)
     await session.flush()  # Получаем recipe.id
 
@@ -91,6 +97,7 @@ async def update_recipe_with_products(
     body: str,
     user_id: int,
     products_info: List[Tuple[int, int, float]],
+    image_url: Optional[str] = None,
 ) -> Recipe:
     """
     Обновляет рецепт и связанные продукты.
@@ -114,6 +121,7 @@ async def update_recipe_with_products(
 
     recipe.title = title
     recipe.body = body
+    recipe.image_url = image_url
 
     await session.execute(
         delete(RecipeProductAssociation).where(
@@ -150,6 +158,7 @@ async def partial_update_recipe_with_products(
     user_id: int,
     title: Optional[str] = None,
     body: Optional[str] = None,
+    image_url: Optional[str] = None,
     products_info: Optional[List[Tuple[int, int, float]]] = None,
 ) -> Recipe:
     """Частичто обновляет рецепт"""
@@ -169,6 +178,8 @@ async def partial_update_recipe_with_products(
         recipe.title = title
     if body is not None:
         recipe.body = body
+    if image_url is not None:
+        recipe.image_url = image_url
 
     if products_info is not None:
         await session.execute(

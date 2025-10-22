@@ -17,6 +17,7 @@ class ProductInRecipe(BaseModel):
 class RecipeCreateRequest(BaseModel):
     title: str
     body: str
+    image_url: Optional[str] = None
     products_info: List[ProductInfo]
 
 
@@ -26,6 +27,7 @@ class RecipeResponse(BaseModel):
     id: int
     title: str
     body: str
+    image_url: Optional[str] = None
     user_id: int
     products: List[ProductInRecipe]
     total_calories: int
@@ -35,4 +37,5 @@ class RecipeResponse(BaseModel):
 class RecipeUpdateRequest(BaseModel):
     title: Optional[str] = None
     body: Optional[str] = None
+    image_url: Optional[str] = None
     products_info: Optional[List[ProductInfo]] = None

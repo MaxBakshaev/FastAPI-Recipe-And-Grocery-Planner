@@ -9,6 +9,7 @@ def map_recipe_to_response(recipe: Recipe) -> RecipeResponse:
         title=recipe.title,
         body=recipe.body,
         user_id=recipe.user_id,
+        image_url=recipe.image_url,
         products=[
             ProductInRecipe(
                 product_id=assoc.product_id,
