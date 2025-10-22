@@ -10,6 +10,8 @@ x-common: &common
   - PYTHONPATH=/app/app
   volumes:
     - ../app:/app/app
+    - ../static:/app/static
+    - ../uploads:/app/static/uploads
   working_dir: /app
 
 services:

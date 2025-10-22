@@ -13,7 +13,6 @@ router = APIRouter(tags=["Views"])
 
 @router.get("/", response_class=HTMLResponse, name="home")
 async def index_page(request: Request):
-    """https://fastapi.tiangolo.com/advanced/templates/#using-jinja2templates"""
     return templates.TemplateResponse(
         "index.html",
         {
@@ -83,6 +82,7 @@ async def api_profile(
                 "id": recipe.id,
                 "title": recipe.title,
                 "body": recipe.body,
+                "image_url": recipe.image_url,
                 "total_quantity": recipe.total_quantity,
                 "total_calories": recipe.total_calories,
             }
