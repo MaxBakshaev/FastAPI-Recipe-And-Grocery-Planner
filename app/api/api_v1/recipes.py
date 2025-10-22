@@ -1,4 +1,3 @@
-import os
 import uuid
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from typing import List
@@ -166,9 +165,6 @@ async def delete_recipe(
             status_code=403,
             detail="Not allowed to delete this recipe",
         )
-
-
-os.makedirs("static/uploads/recipes", exist_ok=True)
 
 
 @router.post("/upload/recipe-image")

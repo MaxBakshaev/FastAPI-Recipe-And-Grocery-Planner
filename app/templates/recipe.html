@@ -65,8 +65,42 @@
                 style="background-color: rgba(20, 113, 219, 0.514); color: white; border: none; width: 30px; height: 30px;
                 font-size: 30px; cursor: pointer; margin-bottom: 20px; display: flex; justify-content: center; align-items: center;">+</button>
 
-            <button type="submit"
-                style="background-color: green; color: white; border: none; padding: 16px 0; font-size: 22px; cursor: pointer; width: 100%;">Создать рецепт</button>
+            <button type="submit" id="submit-btn"
+                style="background-color: green; color: white; border: none; padding: 16px 0; font-size: 22px; cursor: pointer; width: 100%; margin-bottom: 20px;">
+                <span id="btn-text">Создать рецепт</span>
+                <div id="loading-spinner" style="display: none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;">
+                        <style>
+                            @keyframes spin {
+                                from { transform: rotate(0deg); }
+                                to { transform: rotate(360deg); }
+                            }
+                        </style>
+                        <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/>
+                        <path d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z"/>
+                    </svg>
+                </div>
+            </button>
+
+            <!-- Блок для отображения ошибок - ПОД КНОПКОЙ -->
+            <div id="error-message" class="text-center" style="display: none; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; color: #dc3545; font-weight: 500; padding: 12px; border-radius: 8px; background: #f8d7da; border: 1px solid #f5c6cb;">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd"/>
+                    </svg>
+                    <span id="error-text"></span>
+                </div>
+            </div>
+
+            <!-- Блок для отображения успеха - ПОД КНОПКОЙ -->
+            <div id="success-message" class="text-center" style="display: none; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; color: green; font-weight: 500; padding: 12px; border-radius: 8px; background: #d4edda; border: 1px solid #c3e6cb;">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.236 4.53L6.53 10.47a.75.75 0 00-1.06 1.06l2.5 2.5a.75.75 0 001.154-.114l4-5.5z" clip-rule="evenodd"/>
+                    </svg>
+                    <span id="success-text"></span>
+                </div>
+            </div>
         </form>
 
         <pre id="response" hidden
@@ -77,6 +111,44 @@
 <script>
     let productsList = [];
     let uploadedImageUrl = null;
+
+    // Функции для показа/скрытия сообщений
+    function showError(message) {
+        const errorEl = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        errorText.textContent = message;
+        errorEl.style.display = 'block';
+        document.getElementById('success-message').style.display = 'none';
+        
+        // Автоскрытие через 5 секунд
+        setTimeout(() => {
+            hideError();
+        }, 5000);
+    }
+
+    function hideError() {
+        document.getElementById('error-message').style.display = 'none';
+    }
+
+    function showSuccess(message) {
+        const successEl = document.getElementById('success-message');
+        const successText = document.getElementById('success-text');
+        successText.textContent = message;
+        successEl.style.display = 'block';
+        document.getElementById('error-message').style.display = 'none';
+    }
+
+    function showLoading() {
+        document.getElementById('btn-text').style.display = 'none';
+        document.getElementById('loading-spinner').style.display = 'block';
+        document.getElementById('submit-btn').disabled = true;
+    }
+
+    function hideLoading() {
+        document.getElementById('btn-text').style.display = 'block';
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('submit-btn').disabled = false;
+    }
 
     // Предпросмотр картинки
     document.getElementById('recipe-image').addEventListener('change', function(e) {
@@ -100,7 +172,7 @@
             productsList.sort((a, b) => a.name.localeCompare(b.name, 'ru', { sensitivity: 'base' }));
             populateAllProductSelects();
         } catch (err) {
-            alert("Ошибка при загрузке списка продуктов");
+            showError("Ошибка при загрузке списка продуктов");
             console.error(err);
         }
     });
@@ -158,71 +230,84 @@
     document.getElementById('recipe-form').addEventListener('submit', async function (e) {
         e.preventDefault();
 
+        // Скрываем предыдущие сообщения
+        hideError();
+        document.getElementById('success-message').style.display = 'none';
+
         const form = e.target;
         const title = form.title.value.trim();
         const body = form.body.value.trim();
         const imageFile = form.image.files[0];
 
+        // Валидация
         if (!title || !body) {
-            alert('Пожалуйста, заполните название и описание рецепта');
+            showError('Пожалуйста, заполните название и описание рецепта');
             return;
         }
 
-        // Загружаем картинку если она есть
-        let imageUrl = null;
-        if (imageFile) {
-            try {
-                const formData = new FormData();
-                formData.append('file', imageFile);
-
-                const uploadResponse = await fetch('/api/v1/recipes/upload/recipe-image', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (uploadResponse.ok) {
-                    const uploadResult = await uploadResponse.json();
-                    imageUrl = uploadResult.image_url;
-                } else {
-                    alert('Ошибка при загрузке изображения');
-                    return;
-                }
-            } catch (error) {
-                alert('Ошибка при загрузке изображения: ' + error.message);
-                return;
-            }
+        const productBlocks = document.querySelectorAll('.product-block');
+        if (productBlocks.length === 0) {
+            showError('Добавьте хотя бы один продукт в рецепт');
+            return;
         }
 
-        const productBlocks = document.querySelectorAll('.product-block');
         const products_info = [];
-
         for (const block of productBlocks) {
             const product_id = parseInt(block.querySelector('select[name="product_id"]').value);
             const quantity = parseInt(block.querySelector('input[name="quantity"]').value);
 
             if (isNaN(product_id) || isNaN(quantity)) {
-                alert('Пожалуйста, выберите продукт и укажите граммы');
+                showError('Пожалуйста, выберите продукт и укажите граммы для всех позиций');
                 return;
             }
 
             products_info.push({ product_id, quantity });
         }
 
-        const payload = { 
-            title, 
-            body, 
-            products_info,
-            image_url: imageUrl  // Добавляем URL картинки в payload
-        };
-        
-        const token = localStorage.getItem('access_token');
-
-        if (!token) {
-            alert('Пожалуйста, войдите в систему');
-            return;
-        }
+        // Показываем загрузку
+        showLoading();
 
         try {
+            // Загружаем картинку если она есть
+            let imageUrl = null;
+            if (imageFile) {
+                try {
+                    const formData = new FormData();
+                    formData.append('file', imageFile);
+
+                    const uploadResponse = await fetch('/api/v1/recipes/upload/recipe-image', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (uploadResponse.ok) {
+                        const uploadResult = await uploadResponse.json();
+                        imageUrl = uploadResult.image_url;
+                    } else {
+                        const errorData = await uploadResponse.json();
+                        showError(errorData.detail || 'Ошибка при загрузке изображения');
+                        return;
+                    }
+                } catch (error) {
+                    showError('Ошибка при загрузке изображения: ' + error.message);
+                    return;
+                }
+            }
+
+            const payload = { 
+                title, 
+                body, 
+                products_info,
+                image_url: imageUrl
+            };
+            
+            const token = localStorage.getItem('access_token');
+
+            if (!token) {
+                showError('Пожалуйста, войдите в систему');
+                return;
+            }
+
             const response = await fetch('/api/v1/recipes/', {
                 method: 'POST',
                 headers: {
@@ -233,16 +318,32 @@
             });
 
             if (response.ok) {
-                const result = await response.json();
-                alert("Рецепт успешно создан!");
-                window.location.href = "/recipes";  // Редирект на список рецептов
+                showSuccess('Рецепт успешно создан!');
+                // Редирект через 1 секунду
+                setTimeout(() => {
+                    window.location.href = "/recipes";
+                }, 1000);
             } else {
                 const error = await response.json();
-                alert(error.detail || "Ошибка при создании рецепта");
+                showError(error.detail || "Ошибка при создании рецепта");
             }
         } catch (error) {
-            alert("Ошибка при отправке: " + error.message);
+            showError("Ошибка при отправке: " + error.message);
+        } finally {
+            hideLoading();
         }
     });
+
+    // Скрываем ошибку при клике на нее
+    document.getElementById('error-message').addEventListener('click', hideError);
+
+    // Скрываем ошибку при начале ввода в поля формы
+    const inputs = document.querySelectorAll('#recipe-form input, #recipe-form textarea, #recipe-form select');
+    inputs.forEach(input => {
+        input.addEventListener('input', hideError);
+    });
 </script>
+
+{% block extra_js %}<script src="{{ url_for('static', path='js/create-recipe.js') }}"></script>{% endblock %}
+
 {% endblock %}

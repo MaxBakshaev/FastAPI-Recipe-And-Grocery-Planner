@@ -4,43 +4,14 @@
 
 {% block content %}
     <main>
+        
         <header class="row tm-welcome-section">
             <h2 class="col-12 text-center tm-section-title">Добро пожаловать в Планировщик рецептов и покупок!</h2>
             <p class="col-12 text-center">Тут можно сохранять и создавать рецепты, формировать из них списки покупок.</p>
         </header>
-        
-        <div class="tm-paging-links">
-            <nav>
-                <ul>
-                    <li class="tm-paging-item"><a href="#" class="tm-paging-link active">Pizza</a></li>
-                    <li class="tm-paging-item"><a href="#" class="tm-paging-link">Salad</a></li>
-                    <li class="tm-paging-item"><a href="#" class="tm-paging-link">Noodle</a></li>
-                </ul>
-            </nav>
-        </div>
 
         <div class="recipe-gallery" id="recipe-gallery"></div>
 
-        <!-- <div class="tm-section tm-container-inner">
-            <div class="row">
-                <div class="col-md-6">
-                    <figure class="tm-description-figure">
-                        <img src="{{ url_for('static', path='img/products.jpg') }}" alt="Image" class="img-fluid" />
-                    </figure>
-                </div>
-                <div class="col-md-6">
-                    <div class="tm-description-box"> 
-                        <h4 class="tm-gallery-title">Безупречное качество</h4>
-                        <p class="tm-mb-45">Redistributing this template as a downloadable ZIP file on any 
-                            template collection site is strictly prohibited. You will need to 
-                            <a rel="nofollow" href="https://templatemo.com/contact">talk to us</a> 
-                            for additional permissions about our templates. Thank you.
-                        </p>
-                        <a href="about.html" class="tm-btn tm-btn-default tm-right">Read More</a>
-                    </div>
-                </div>
-            </div>
-        </div> -->
     </main>
     {% block extra_js %}<script src="{{ url_for('static', path='js/recipes-gallery.js') }}"></script>{% endblock %}
 {% endblock %}
