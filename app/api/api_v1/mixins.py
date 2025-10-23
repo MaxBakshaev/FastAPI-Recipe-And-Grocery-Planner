@@ -1,5 +1,5 @@
-from core.models import Recipe
-from core.schemas import ProductInRecipe, RecipeResponse
+from app.core.models import Recipe
+from app.core.schemas import ProductInRecipe, RecipeResponse
 
 
 def map_recipe_to_response(recipe: Recipe) -> RecipeResponse:

@@ -3,11 +3,11 @@ from typing import TYPE_CHECKING, Annotated
 from fastapi import Depends
 from fastapi_users.authentication.strategy.db import DatabaseStrategy
 
-from core.config import settings
+from app.core.config import settings
 from .access_tokens import get_access_tokens_db
 
 if TYPE_CHECKING:
-    from core.models import AccessToken
+    from app.core.models import AccessToken
     from fastapi_users.authentication.strategy.db import AccessTokenDatabase
 
 

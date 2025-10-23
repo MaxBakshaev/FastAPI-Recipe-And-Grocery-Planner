@@ -2,7 +2,7 @@
 
 from fastapi_users.authentication import BearerTransport, CookieTransport
 
-from core.config import settings
+from app.core.config import settings
 
 cookie_transport = CookieTransport(
     cookie_name="access_token",

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends
 
-from core.models import db_helper, AccessToken
+from app.core.models import db_helper, AccessToken
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession

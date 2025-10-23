@@ -4,10 +4,10 @@ import asyncio
 import contextlib
 from os import getenv
 
-from api.dependencies.authentication import get_users_db, get_user_manager
-from core.authentication import UserManager
-from core.models import db_helper, User
-from core.schemas import UserCreate
+from app.api.dependencies.authentication import get_users_db, get_user_manager
+from app.core.authentication import UserManager
+from app.core.models import db_helper, User
+from app.core.schemas import UserCreate
 
 
 get_users_db_context = contextlib.asynccontextmanager(get_users_db)

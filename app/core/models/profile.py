@@ -1,8 +1,8 @@
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.models import User
-from core.types.user_id import UserIdType
+from app.core.models import User
+from app.core.types.user_id import UserIdType
 
 from .base import Base
 from .mixins.id_int_pk import IdIntPkMixin

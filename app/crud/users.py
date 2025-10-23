@@ -4,9 +4,9 @@ from fastapi_users.exceptions import InvalidPasswordException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.authentication import UserManager
-from core.schemas import UserCreate
-from core.models import User, Profile
+from app.core.authentication import UserManager
+from app.core.schemas import UserCreate
+from app.core.models import User, Profile
 
 
 async def get_all_users(

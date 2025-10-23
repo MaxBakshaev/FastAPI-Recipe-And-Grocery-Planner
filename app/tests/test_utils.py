@@ -1,4 +1,4 @@
-from utils import camel_case_to_snake_case
+from app.utils import camel_case_to_snake_case
 
 
 def test_camel_case_to_snake_case():

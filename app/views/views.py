@@ -4,9 +4,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.fastapi_users import current_active_user_bearer
-from core.models import db_helper, Recipe, User
-from utils.templates import templates
+from app.api.api_v1.fastapi_users import current_active_user_bearer
+from app.core.models import db_helper, Recipe, User
+from app.utils.templates import templates
 
 router = APIRouter(tags=["Views"])
 
