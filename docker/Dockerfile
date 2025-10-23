@@ -10,7 +10,8 @@ RUN poetry config virtualenvs.create false && \
     poetry install --no-interaction --no-ansi --no-root
 
 COPY app ./app
-COPY static ./static
+
+RUN mkdir -p /app/static /app/static/uploads
 
 COPY docker/wait-for-it.sh /app/wait-for-it.sh
 RUN chmod +x /app/wait-for-it.sh
