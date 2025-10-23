@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPBearer
 
-from core.config import settings
+from app.core.config import settings
 
 from .auth import router as auth_router
 from .users import router as users_router

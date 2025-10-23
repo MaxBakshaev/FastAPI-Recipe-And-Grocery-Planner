@@ -1,13 +1,13 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
 
-from api.api_v1.fastapi_users import (
+from app.api.api_v1.fastapi_users import (
     current_active_user_bearer,
     current_active_super_user_bearer,
 )
-from core.config import settings
-from core.models import User
-from core.schemas import UserRead
+from app.core.config import settings
+from app.core.models import User
+from app.core.schemas import UserRead
 
 router = APIRouter(
     prefix=settings.api.v1.messages,

@@ -7,7 +7,7 @@ from fastapi_users_db_sqlalchemy.access_token import (
 from sqlalchemy import Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.types.user_id import UserIdType
+from app.core.types.user_id import UserIdType
 from .base import Base
 
 if TYPE_CHECKING:

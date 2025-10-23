@@ -2,9 +2,9 @@
 
 from fastapi import APIRouter
 
-from api.api_v1.fastapi_users import fastapi_users_bearer
-from core.config import settings
-from core.schemas import UserRead, UserUpdate
+from app.api.api_v1.fastapi_users import fastapi_users_bearer
+from app.core.config import settings
+from app.core.schemas import UserRead, UserUpdate
 
 router = APIRouter(
     prefix=settings.api.v1.users,

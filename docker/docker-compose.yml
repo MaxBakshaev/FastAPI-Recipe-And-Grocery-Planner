@@ -7,11 +7,11 @@ x-common: &common
   env_file:
     - ../app/.env
   environment:
-  - PYTHONPATH=/app/app
+  - PYTHONPATH=/app
   volumes:
-    - ../app:/app/app
-    - ../static:/app/static
-    - ../uploads:/app/static/uploads
+    - ../app:/app/app:delegated
+    - ../static:/app/static:delegated
+    - ../uploads:/app/static/uploads:delegated
   working_dir: /app
 
 services:
@@ -29,7 +29,8 @@ services:
     <<: *common
     ports:
       - "8000:8000"
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "uvicorn", "app.main:application", "--host", "0.0.0.0", "--port", "8000"]
+    command: ["./wait-for-it.sh", "postgres:5432", "--",
+              "uvicorn", "app.main:application", "--host", "0.0.0.0", "--port", "8000"]
 
   alembic:
     <<: *common

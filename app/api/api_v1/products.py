@@ -2,10 +2,10 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Path, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from crud import products
-from core.models import db_helper
-from core.schemas import Product, ProductCreate, ProductUpdate
-from core.config import settings
+from app.crud import products
+from app.core.models import db_helper
+from app.core.schemas import Product, ProductCreate, ProductUpdate
+from app.core.config import settings
 
 router = APIRouter(
     prefix=settings.api.v1.products,

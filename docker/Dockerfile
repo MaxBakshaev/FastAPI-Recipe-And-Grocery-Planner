@@ -2,15 +2,19 @@ FROM python:3.12.10
 
 WORKDIR /app
 
-COPY ../requirements.txt requirements.txt
-RUN pip3 install --upgrade setuptools
-RUN pip3 install --no-cache-dir -r requirements.txt
-COPY .. .
-RUN chmod 755 .
+RUN pip3 install --no-cache-dir poetry
+
+COPY pyproject.toml poetry.lock ./
+
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-interaction --no-ansi --no-root
+
+COPY app ./app
+COPY static ./static
 
 COPY docker/wait-for-it.sh /app/wait-for-it.sh
 RUN chmod +x /app/wait-for-it.sh
 
 ENV PYTHONPATH=/app
 
-CMD ["python", "app/main.py"]
+CMD ["uvicorn", "app.main:application", "--host", "0.0.0.0", "--port", "8000"]

@@ -6,10 +6,10 @@ from fastapi.responses import ORJSONResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
-from api import router as api_router
-from core.config import settings
-from core.models import db_helper
-from views import router as views_router
+from app.api import router as api_router
+from app.core.config import settings
+from app.core.models import db_helper
+from app.views import router as views_router
 
 
 @asynccontextmanager

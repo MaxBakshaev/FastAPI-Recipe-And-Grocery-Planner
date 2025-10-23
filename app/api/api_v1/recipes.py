@@ -3,12 +3,12 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.fastapi_users import current_active_user_bearer
-from api.api_v1.mixins import map_recipe_to_response
-from crud import recipes
-from core.config import settings
-from core.models import db_helper, User
-from core.schemas import (
+from app.api.api_v1.fastapi_users import current_active_user_bearer
+from app.api.api_v1.mixins import map_recipe_to_response
+from app.crud import recipes
+from app.core.config import settings
+from app.core.models import db_helper, User
+from app.core.schemas import (
     RecipeCreateRequest,
     RecipeResponse,
     RecipeUpdateRequest,

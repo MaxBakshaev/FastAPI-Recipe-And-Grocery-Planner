@@ -1,9 +1,9 @@
 from fastapi_users import FastAPIUsers
 
-from core.models import User
-from core.types.user_id import UserIdType
+from app.core.models import User
+from app.core.types.user_id import UserIdType
 
-from api.dependencies.authentication import (
+from app.api.dependencies.authentication import (
     authentication_backend_bearer,
     authentication_backend_cookie,
     get_user_manager,

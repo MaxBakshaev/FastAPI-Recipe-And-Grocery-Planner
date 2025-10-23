@@ -5,8 +5,8 @@ from sqlalchemy import Result, select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from core.schemas import ProductInfo
-from core.models import Product, Recipe, RecipeProductAssociation
+from app.core.schemas import ProductInfo
+from app.core.models import Product, Recipe, RecipeProductAssociation
 
 
 async def get_recipes_with_products(session: AsyncSession) -> list[Recipe]:

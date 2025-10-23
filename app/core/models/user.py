@@ -7,7 +7,7 @@ from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from . import Base
-from core.types.user_id import UserIdType
+from app.core.types.user_id import UserIdType
 from .mixins.id_int_pk import IdIntPkMixin
 
 if TYPE_CHECKING:
