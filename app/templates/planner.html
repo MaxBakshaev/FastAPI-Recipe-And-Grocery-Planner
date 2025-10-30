@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="tm-container-inner-2 tm-contact-section-2">
+    <div class="row">
+        
+        <!-- Заголовок страницы -->
+        <header class="row tm-welcome-section">
+            <h2 class="col-12 text-center tm-section-title">Мой планировщик</h2>
+            <p class="col-12 text-center">Здесь собраны все ваши сохраненные рецепты для планирования покупок</p>
+        </header>
+
+        <!-- Статистика -->
+        <div class="col-12" style="margin-bottom: 30px;">
+            <div class="tm-stat-container" style="display: flex; justify-content: space-around; text-align: center; background: #f8f8f8; padding: 20px; border-radius: 10px;">
+                <div class="tm-stat-item">
+                    <h3 id="total-recipes" class="tm-stat-number">0</h3>
+                    <p class="tm-stat-label">Всего рецептов</p>
+                </div>
+                <div class="tm-stat-item">
+                    <h3 id="total-calories" class="tm-stat-number">0</h3>
+                    <p class="tm-stat-label">Общая калорийность</p>
+                </div>
+                <div class="tm-stat-item">
+                    <h3 id="total-weight" class="tm-stat-number">0</h3>
+                    <p class="tm-stat-label">Общий вес (г)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Поиск и фильтры -->
+        <div class="col-12" style="margin-bottom: 30px;">
+            <div class="tm-search-container" style="display: flex; gap: 15px; align-items: center; background: #f8f8f8; padding: 20px; border-radius: 10px;">
+                <div style="flex: 1;">
+                    <input type="text" id="search-input" placeholder="Поиск по названию рецепта..." 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px;">
+                </div>
+                <div>
+                    <select id="sort-select" style="padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px;">
+                        <option value="title">По названию</option>
+                        <option value="calories">По калорийности</option>
+                        <option value="weight">По весу</option>
+                        <option value="newest">Сначала новые</option>
+                    </select>
+                </div>
+                <div>
+                    <button id="clear-filters" class="tm-btn tm-btn-default" 
+                            style="padding: 12px 20px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Сбросить
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Галерея сохраненных рецептов -->
+        <div class="col-12">
+            <div id="saved-recipes-gallery" class="recipe-gallery">
+                <div class="text-center">Загрузка сохраненных рецептов...</div>
+            </div>
+        </div>
+
+        <!-- Блок для списка покупок -->
+        <div class="col-12" style="margin-top: 50px;">
+            <div class="tm-grocery-section" style="background: #f8f8f8; padding: 30px; border-radius: 10px;">
+                <h3 class="tm-gallery-title text-center">Список покупок</h3>
+                <div id="grocery-list-container">
+                    <p class="text-center">Выберите рецепты для формирования списка покупок</p>
+                    <div id="selected-recipes" style="margin-bottom: 20px;"></div>
+                    <div id="grocery-list" style="display: none;">
+                        <h4>Ваш список покупок:</h4>
+                        <ul id="grocery-items"></ul>
+                        <button id="clear-grocery-list" class="tm-btn tm-btn-default" 
+                                style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 15px;">
+                            Очистить список
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', path='js/planner.js') }}"></script>
+{% endblock %}
