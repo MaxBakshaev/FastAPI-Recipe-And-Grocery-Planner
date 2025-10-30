@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.api_v1.fastapi_users import current_active_user_bearer
 from app.api.api_v1.mixins import map_recipe_to_response
-from app.crud import recipes
+from app.crud import recipes, saved_recipes
 from app.core.config import settings
 from app.core.models import db_helper, User
 from app.core.schemas import (
@@ -25,6 +25,7 @@ async def get_recipes_with_products(
     session: AsyncSession = Depends(db_helper.session_getter),
 ):
     """Возвращает список рецептов с продуктами"""
+
     recipe_list = await recipes.get_recipes_with_products(session=session)
 
     return [map_recipe_to_response(recipe) for recipe in recipe_list]
@@ -41,6 +42,7 @@ async def create_recipe_with_products(
     current_user: User = Depends(current_active_user_bearer),
 ):
     """Создает и возвращает рецепт с продуктами"""
+
     try:
         recipe = await recipes.create_recipe_with_products(
             session=session,
@@ -61,14 +63,24 @@ async def create_recipe_with_products(
 async def get_recipe_with_products_by_id(
     recipe_id: int,
     session: AsyncSession = Depends(db_helper.session_getter),
+    current_user: User = Depends(current_active_user_bearer),
 ) -> RecipeResponse:
     """Возвращает рецепт по id с продуктами"""
+
     recipe = await recipes.get_recipe_with_products_by_id(
         session=session,
         recipe_id=recipe_id,
     )
     if recipe is None:
         raise HTTPException(status_code=404, detail="Recipe not found")
+
+    is_saved = await saved_recipes.is_recipe_saved_by_user(
+        session=session,
+        user_id=current_user.id,
+        recipe_id=recipe_id,
+    )
+    recipe.is_saved = is_saved
+
     return map_recipe_to_response(recipe)
 
 
@@ -80,6 +92,7 @@ async def update_recipe_with_products(
     current_user: User = Depends(current_active_user_bearer),
 ):
     """Обновляет рецепт по id с продуктами"""
+
     try:
         recipe = await recipes.update_recipe_with_products(
             session=session,
@@ -111,6 +124,7 @@ async def partial_update_recipe(
     current_user: User = Depends(current_active_user_bearer),
 ):
     """Частично обновляет рецепт по id"""
+
     try:
         updated_recipe = await recipes.partial_update_recipe_with_products(
             session=session,
@@ -149,6 +163,7 @@ async def delete_recipe(
     current_user: User = Depends(current_active_user_bearer),
 ):
     """Удаляет рецепт по id"""
+
     try:
         await recipes.delete_recipe(
             session=session,
@@ -169,14 +184,14 @@ async def delete_recipe(
 
 @router.post("/upload/recipe-image")
 async def upload_recipe_image(file: UploadFile = File(...)):
-    # Проверяем тип файла
+    # Проверка тип файла
     if not file.content_type.startswith("image/"):
         raise HTTPException(
             status_code=400,
             detail="Файл должен быть изображением",
         )
 
-    # Проверяем размер файла (максимум 5MB)
+    # Проверка размера файла (максимум 5MB)
     file.file.seek(0, 2)
     file_size = file.file.tell()
     file.file.seek(0)
@@ -187,7 +202,7 @@ async def upload_recipe_image(file: UploadFile = File(...)):
             detail="Файл слишком большой. Максимальный размер: 5MB",
         )
 
-    # Генерируем уникальное имя файла
+    # Генерация уникального имени файла
     file_extension = (
         file.filename.split(".")[-1] if "." in file.filename else "jpg"
     )  # noqa: E501
@@ -195,12 +210,12 @@ async def upload_recipe_image(file: UploadFile = File(...)):
     file_path = f"static/uploads/recipes/{filename}"
 
     try:
-        # Сохраняем файл
+        # Сохранение файла
         with open(file_path, "wb") as buffer:
             content = await file.read()
             buffer.write(content)
 
-        # Возвращаем URL для доступа к файлу
+        # Возвращение URL для доступа к файлу
         image_url = f"/static/uploads/recipes/{filename}"
         return {"image_url": image_url}
 

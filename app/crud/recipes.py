@@ -7,10 +7,15 @@ from sqlalchemy.orm import selectinload
 
 from app.core.schemas import ProductInfo
 from app.core.models import Product, Recipe, RecipeProductAssociation
+from app.crud.saved_recipes import get_saved_recipe_ids
 
 
-async def get_recipes_with_products(session: AsyncSession) -> list[Recipe]:
+async def get_recipes_with_products(
+    session: AsyncSession,
+    user_id: int | None = None,
+) -> list[Recipe]:
     """Возвращает все рецепты с продуктами"""
+
     stmt = (
         select(Recipe)
         .options(selectinload(Recipe.product_associations))
@@ -18,6 +23,13 @@ async def get_recipes_with_products(session: AsyncSession) -> list[Recipe]:
     )
     result: Result = await session.execute(stmt)
     recipes = result.scalars().all()
+
+    # Если передан user_id, добавляется информация о сохраненности
+    if user_id:
+        saved_recipe_ids = await get_saved_recipe_ids(session, user_id)
+        for recipe in recipes:
+            recipe.is_saved = recipe.id in saved_recipe_ids
+
     return list(recipes)
 
 

@@ -32,6 +32,7 @@ class RecipeResponse(BaseModel):
     products: List[ProductInRecipe]
     total_calories: int
     total_quantity: int
+    is_saved: bool = False
 
 
 class RecipeUpdateRequest(BaseModel):

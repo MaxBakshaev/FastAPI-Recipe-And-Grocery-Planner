@@ -4,6 +4,7 @@ from app.core.schemas import ProductInRecipe, RecipeResponse
 
 def map_recipe_to_response(recipe: Recipe) -> RecipeResponse:
     """Преобразует объект модели Recipe в RecipeResponse"""
+
     return RecipeResponse(
         id=recipe.id,
         title=recipe.title,
@@ -20,4 +21,5 @@ def map_recipe_to_response(recipe: Recipe) -> RecipeResponse:
         ],
         total_calories=recipe.total_calories,
         total_quantity=recipe.total_quantity,
+        is_saved=getattr(recipe, "is_saved", False),
     )
