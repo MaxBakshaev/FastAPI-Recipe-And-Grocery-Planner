@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from .user import User
     from .product import Product
     from .recipe_product_association import RecipeProductAssociation
+    from .saved_recipe import SavedRecipe
 
 
 class Recipe(Base, IdIntPkMixin):
@@ -22,14 +23,14 @@ class Recipe(Base, IdIntPkMixin):
         server_default="",
     )
     image_url: Mapped[Optional[str]] = mapped_column(
-        String(500),
-        nullable=True,
-        default=None
+        String(500), nullable=True, default=None
     )
-    product_associations: Mapped[list["RecipeProductAssociation"]] = relationship(
-        "RecipeProductAssociation",
-        back_populates="recipe",
-        cascade="all, delete-orphan",
+    product_associations: Mapped[list["RecipeProductAssociation"]] = (
+        relationship(  # noqa: E501
+            "RecipeProductAssociation",
+            back_populates="recipe",
+            cascade="all, delete-orphan",
+        )
     )
     products: Mapped[list["Product"]] = relationship(
         secondary="recipe_product_association",
@@ -41,6 +42,13 @@ class Recipe(Base, IdIntPkMixin):
         # nullable=False,
     )
     user: Mapped["User"] = relationship(back_populates="recipes")
+
+    # Пользователи, сохранившие рецепт
+    saved_by_users: Mapped[list["SavedRecipe"]] = relationship(
+        "SavedRecipe",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
+    )
 
     @property
     def total_quantity(self) -> int:

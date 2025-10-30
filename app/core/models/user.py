@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
     from .profile import Profile
     from .recipe import Recipe
+    from .saved_recipe import SavedRecipe
 
 
 class User(Base, IdIntPkMixin, SQLAlchemyBaseUserTable[UserIdType]):
@@ -21,7 +22,16 @@ class User(Base, IdIntPkMixin, SQLAlchemyBaseUserTable[UserIdType]):
 
     username: Mapped[str] = mapped_column(String(32), unique=True)
     profile: Mapped["Profile"] = relationship("Profile", back_populates="user")
+
+    # Рецепты, созданные пользователем
     recipes: Mapped[list["Recipe"]] = relationship(back_populates="user")
+
+    # Рецепты, сохраненные пользователем
+    saved_recipes: Mapped[list["SavedRecipe"]] = relationship(
+        "SavedRecipe",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
 
     @classmethod
     def get_db(cls, session: "AsyncSession"):

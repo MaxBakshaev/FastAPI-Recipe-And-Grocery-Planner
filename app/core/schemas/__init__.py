@@ -10,6 +10,8 @@ __all__ = (
     "UserRead",
     "UserCreate",
     "UserUpdate",
+    "SavedRecipeResponse",
+    "SaveRecipeRequest",
 )
 
 from .product import (
@@ -25,3 +27,4 @@ from .recipe import (
     RecipeUpdateRequest,
 )
 from .user import UserRead, UserCreate, UserUpdate
+from .saved_recipe import SavedRecipeResponse, SaveRecipeRequest
