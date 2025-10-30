@@ -39,6 +39,9 @@
                                 </li>
 
                                 <!-- Авторизованные пользователи -->
+                                <li class="tm-nav-li menu-planner hidden">
+                                    <a href="{{ url_for('planner') }}" class="tm-nav-link {% if title == 'Планировщик' %}active{% endif %}">Планировщик</a>
+                                </li>
                                 <li class="tm-nav-li menu-recipes hidden">
                                     <a href="{{ url_for('recipe') }}" class="tm-nav-link {% if title == 'Рецепты' %}active{% endif %}">Рецепты</a>
                                 </li>
@@ -76,6 +79,7 @@
     <script src="{{ url_for('static', path='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', path='js/parallax.min.js') }}"></script>
     <script src="{{ url_for('static', path='js/logout.js') }}"></script>
+    <script src="{{ url_for('static', path='js/menu-visibility.js') }}"></script>
 </body>
 
 </html>

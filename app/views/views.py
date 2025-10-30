@@ -100,3 +100,14 @@ async def recipe(request: Request):
             "title": "Рецепты",
         },
     )
+
+
+@router.get("/planner", response_class=HTMLResponse, name="planner")
+async def planner_page(request: Request):
+    return templates.TemplateResponse(
+        "planner.html",
+        {
+            "request": request,
+            "title": "Планировщик",
+        },
+    )
