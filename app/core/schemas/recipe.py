@@ -33,6 +33,7 @@ class RecipeResponse(BaseModel):
     total_calories: int
     total_quantity: int
     is_saved: bool = False
+    username: Optional[str] = None
 
 
 class RecipeUpdateRequest(BaseModel):

@@ -18,7 +18,10 @@ async def get_recipes_with_products(
 
     stmt = (
         select(Recipe)
-        .options(selectinload(Recipe.product_associations))
+        .options(
+            selectinload(Recipe.product_associations),
+            selectinload(Recipe.user),
+        )
         .order_by(Recipe.id)
     )
     result: Result = await session.execute(stmt)
