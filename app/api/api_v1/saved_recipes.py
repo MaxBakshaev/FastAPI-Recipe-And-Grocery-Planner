@@ -22,15 +22,18 @@ async def get_my_saved_recipes(
 ):
     """Возвращает сохраненные рецепты текущего пользователя"""
 
-    saved_recipes_list = await saved_recipes.get_saved_recipes(
-        session=session,
-        user_id=current_user.id,
-    )
+    try:
+        saved_recipes_list = await saved_recipes.get_saved_recipes(
+            session=session,
+            user_id=current_user.id,
+        )
 
-    return [
-        map_recipe_to_response(saved_recipe.recipe)
-        for saved_recipe in saved_recipes_list
-    ]
+        recipes = [saved_recipe.recipe for saved_recipe in saved_recipes_list]
+        return [map_recipe_to_response(recipe) for recipe in recipes]
+
+    except Exception as e:
+        print(f"Error in get_my_saved_recipes: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post(
@@ -99,3 +102,8 @@ async def check_recipe_saved(
     )
 
     return {"is_saved": is_saved}
+
+
+@router.get("/test")
+async def test_endpoint():
+    return {"message": "Saved recipes router is working!"}

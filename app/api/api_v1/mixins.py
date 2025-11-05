@@ -22,4 +22,9 @@ def map_recipe_to_response(recipe: Recipe) -> RecipeResponse:
         total_calories=recipe.total_calories,
         total_quantity=recipe.total_quantity,
         is_saved=getattr(recipe, "is_saved", False),
+        username=(
+            getattr(recipe.user, "username", None)
+            if hasattr(recipe, "user") and recipe.user
+            else None
+        ),
     )

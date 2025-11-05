@@ -31,6 +31,25 @@ async def get_recipes_with_products(
     return [map_recipe_to_response(recipe) for recipe in recipe_list]
 
 
+@router.get("/", response_model=List[RecipeResponse])
+async def get_public_recipes(
+    session: AsyncSession = Depends(db_helper.session_getter),
+    current_user: User = Depends(current_active_user_bearer),
+):
+    """Возвращает список рецептов с продуктами"""
+    recipe_list = await recipes.get_recipes_with_products(session=session)
+
+    if current_user:
+        saved_recipe_ids = await saved_recipes.get_saved_recipe_ids(
+            session,
+            current_user.id,
+        )
+        for recipe in recipe_list:
+            recipe.is_saved = recipe.id in saved_recipe_ids
+
+    return [map_recipe_to_response(recipe) for recipe in recipe_list]
+
+
 @router.post(
     "/",
     response_model=RecipeResponse,
